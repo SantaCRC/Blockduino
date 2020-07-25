@@ -1,128 +1,76 @@
 /**
- * @license
- * Copyright 2015 Google LLC
- * SPDX-License-Identifier: Apache-2.0
+ * Visual Blocks Language
+ *
+ * Copyright 2012 Google Inc.
+ * http://code.google.com/p/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
- * @fileoverview Generating ARDUINO for logic blocks.
- * @author daarond@gmail.com (Daaron Dwyer)
+ * @fileoverview Generating C for logic blocks.
+ * @author fraser@google.com (Neil Fraser)
+ * Due to the frequency of long strings, the 80-column wrap rule need not apply
+ * to language files.
  */
-'use strict';
 
-goog.provide('Blockly.ARDUINO.logic');
+Blockly.C = Blockly.Generator.get('C');
 
-goog.require('Blockly.ARDUINO');
-
-
-Blockly.ARDUINO['controls_if'] = function(block) {
-  // If/elseif/else condition.
-  var n = 0;
-  var code = '', branchCode, conditionCode;
-  if (Blockly.ARDUINO.STATEMENT_PREFIX) {
-    // Automatic prefix insertion is switched off for this block.  Add manually.
-    code += Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_PREFIX, block);
-  }
-  do {
-    conditionCode = Blockly.ARDUINO.valueToCode(block, 'IF' + n,
-        Blockly.ARDUINO.ORDER_NONE) || 'false';
-    branchCode = Blockly.ARDUINO.statementToCode(block, 'DO' + n);
-    if (Blockly.ARDUINO.STATEMENT_SUFFIX) {
-      branchCode = Blockly.ARDUINO.prefixLines(
-          Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_SUFFIX, block),
-          Blockly.ARDUINO.INDENT) + branchCode;
-    }
-    code += (n > 0 ? ' else ' : '') +
-        'if (' + conditionCode + ') {\n' + branchCode + '}';
-    ++n;
-  } while (block.getInput('IF' + n));
-
-  if (block.getInput('ELSE') || Blockly.ARDUINO.STATEMENT_SUFFIX) {
-    branchCode = Blockly.ARDUINO.statementToCode(block, 'ELSE');
-    if (Blockly.ARDUINO.STATEMENT_SUFFIX) {
-      branchCode = Blockly.ARDUINO.prefixLines(
-          Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_SUFFIX, block),
-          Blockly.ARDUINO.INDENT) + branchCode;
-    }
-    code += ' else {\n' + branchCode + '}';
-  }
-  return code + '\n';
-};
-
-Blockly.ARDUINO['controls_ifelse'] = Blockly.ARDUINO['controls_if'];
-
-Blockly.ARDUINO['logic_compare'] = function(block) {
+Blockly.C.logic_compare = function(opt_dropParens) {
   // Comparison operator.
-  var OPERATORS = {
-    'EQ': '==',
-    'NEQ': '!=',
-    'LT': '<',
-    'LTE': '<=',
-    'GT': '>',
-    'GTE': '>='
-  };
-  var operator = OPERATORS[block.getFieldValue('OP')];
-  var order = (operator == '==' || operator == '!=') ?
-      Blockly.ARDUINO.ORDER_EQUALITY : Blockly.ARDUINO.ORDER_RELATIONAL;
-  var argument0 = Blockly.ARDUINO.valueToCode(block, 'A', order) || '0';
-  var argument1 = Blockly.ARDUINO.valueToCode(block, 'B', order) || '0';
+  var mode = this.getInputLabelValue('B');
+  var operator = Blockly.C.logic_compare.OPERATORS[mode];
+  var argument0 = Blockly.C.valueToCode(this, 'A') || '0';
+  var argument1 = Blockly.C.valueToCode(this, 'B') || '0';
   var code = argument0 + ' ' + operator + ' ' + argument1;
-  return [code, order];
-};
-
-Blockly.ARDUINO['logic_operation'] = function(block) {
-  // Operations 'and', 'or'.
-  var operator = (block.getFieldValue('OP') == 'AND') ? '&&' : '||';
-  var order = (operator == '&&') ? Blockly.ARDUINO.ORDER_LOGICAL_AND :
-      Blockly.ARDUINO.ORDER_LOGICAL_OR;
-  var argument0 = Blockly.ARDUINO.valueToCode(block, 'A', order);
-  var argument1 = Blockly.ARDUINO.valueToCode(block, 'B', order);
-  if (!argument0 && !argument1) {
-    // If there are no arguments, then the return value is false.
-    argument0 = 'false';
-    argument1 = 'false';
-  } else {
-    // Single missing arguments have no effect on the return value.
-    var defaultArgument = (operator == '&&') ? 'true' : 'false';
-    if (!argument0) {
-      argument0 = defaultArgument;
-    }
-    if (!argument1) {
-      argument1 = defaultArgument;
-    }
+  if (!opt_dropParens) {
+    code = '(' + code + ')';
   }
+  return code;
+};
+
+Blockly.C.logic_compare.OPERATORS = {
+  EQ: '==',
+  NEQ: '!=',
+  LT: '<',
+  LTE: '<=',
+  GT: '>',
+  GTE: '>='
+};
+
+Blockly.C.logic_operation = function(opt_dropParens) {
+  // Operations 'and', 'or'.
+  var argument0 = Blockly.C.valueToCode(this, 'A') || 'false';
+  var argument1 = Blockly.C.valueToCode(this, 'B') || 'false';
+  var operator = (this.getInputLabelValue('B') == 'AND') ? '&&' : '||';
   var code = argument0 + ' ' + operator + ' ' + argument1;
-  return [code, order];
+  if (!opt_dropParens) {
+    code = '(' + code + ')';
+  }
+  return code;
 };
 
-Blockly.ARDUINO['logic_negate'] = function(block) {
+Blockly.C.logic_negate = function(opt_dropParens) {
   // Negation.
-  var order = Blockly.ARDUINO.ORDER_LOGICAL_NOT;
-  var argument0 = Blockly.ARDUINO.valueToCode(block, 'BOOL', order) ||
-      'true';
+  var argument0 = Blockly.C.valueToCode(this, 'BOOL') || 'false';
   var code = '!' + argument0;
-  return [code, order];
+  if (!opt_dropParens) {
+    code = '(' + code + ')';
+  }
+  return code;
 };
 
-Blockly.ARDUINO['logic_boolean'] = function(block) {
+Blockly.C.logic_boolean = function() {
   // Boolean values true and false.
-  var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
-  return [code, Blockly.ARDUINO.ORDER_ATOMIC];
-};
-
-Blockly.ARDUINO['logic_null'] = function(block) {
-  // Null data type.
-  return ['null', Blockly.ARDUINO.ORDER_ATOMIC];
-};
-
-Blockly.ARDUINO['logic_ternary'] = function(block) {
-  // Ternary operator.
-  var value_if = Blockly.ARDUINO.valueToCode(block, 'IF',
-      Blockly.ARDUINO.ORDER_CONDITIONAL) || 'false';
-  var value_then = Blockly.ARDUINO.valueToCode(block, 'THEN',
-      Blockly.ARDUINO.ORDER_CONDITIONAL) || 'null';
-  var value_else = Blockly.ARDUINO.valueToCode(block, 'ELSE',
-      Blockly.ARDUINO.ORDER_CONDITIONAL) || 'null';
-  var code = value_if + ' ? ' + value_then + ' : ' + value_else;
-  return [code, Blockly.ARDUINO.ORDER_CONDITIONAL];
+  return (this.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
 };
