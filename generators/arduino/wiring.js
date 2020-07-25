@@ -27,37 +27,37 @@
 Blockly.C = Blockly.Generator.get('C');
 
 
-Blockly.C.led = function() {
+Blockly.ARDUINO.led = function() {
   var pin = this.getTitleValue('PIN');
   var val = this.getTitleValue('VAL');
-  
+
   return 'digitalWrite(' + pin + ', ' + (val == 'ON' ? 'HIGH' : 'LOW') + ');\n';
 };
 
-Blockly.C.output = function() {
+Blockly.ARDUINO.output = function() {
   var pin = this.getTitleValue('PIN');
   var val = this.getTitleValue('VAL');
-  
+
   return 'digitalWrite(' + pin + ', ' + val + ');\n';
 };
 
-Blockly.C.input = function() {
+Blockly.ARDUINO.input = function() {
   var pin = this.getTitleValue('PIN');
   var val = this.getTitleValue('VAL');
-  
+
   return (val == 'LOW' ? '!' : '') + 'digitalRead(' + pin + ')';
 };
 
-Blockly.C.servo = function() {
+Blockly.ARDUINO.servo = function() {
   var pin = this.getTitleValue('PIN');
-  var val = Blockly.C.valueToCode(this, 'A', true) || '0';
-  
+  var val = Blockly.ARDUINO.valueToCode(this, 'A', true) || '0';
+
   return 'set_servo(' + pin + ', ' + val + ');\n';
 };
 
-Blockly.C.optocoupler = function() {
+Blockly.ARDUINO.optocoupler = function() {
   var pin = this.getTitleValue('PIN');
   var val = this.getTitleValue('VAL');
-  
+
   return (val == 'ACTIVE' ? '!' : '') + 'digitalRead(' + pin + ')';
 };

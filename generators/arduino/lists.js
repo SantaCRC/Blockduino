@@ -26,27 +26,27 @@
 
 Blockly.C = Blockly.Generator.get('C');
 
-Blockly.C.lists_create_empty = function() {
+Blockly.ARDUINO.lists_create_empty = function() {
   // Create an empty list.
   return '[]';
 };
 
-Blockly.C.lists_create_with = function() {
+Blockly.ARDUINO.lists_create_with = function() {
   // Create a list with any number of elements of any type.
   var code = new Array(this.itemCount_);
   for (n = 0; n < this.itemCount_; n++) {
-    code[n] = Blockly.C.valueToCode(this, 'ADD' + n, true) || 'null';
+    code[n] = Blockly.ARDUINO.valueToCode(this, 'ADD' + n, true) || 'null';
   }
   return '[' + code.join(', ') + ']';
 };
 
-Blockly.C.lists_repeat = function() {
+Blockly.ARDUINO.lists_repeat = function() {
   // Create a list with one element repeated.
-  if (!Blockly.C.definitions_['lists_repeat']) {
+  if (!Blockly.ARDUINO.definitions_['lists_repeat']) {
     // Function copied from Closure's goog.array.repeat.
-    var functionName = Blockly.C.variableDB_.getDistinctName('lists_repeat',
+    var functionName = Blockly.ARDUINO.variableDB_.getDistinctName('lists_repeat',
         Blockly.Generator.NAME_TYPE);
-    Blockly.C.lists_repeat.repeat = functionName;
+    Blockly.ARDUINO.lists_repeat.repeat = functionName;
     var func = [];
     func.push('function ' + functionName + '(value, n) {');
     func.push('  var array = [];');
@@ -55,38 +55,38 @@ Blockly.C.lists_repeat = function() {
     func.push('  }');
     func.push('  return array;');
     func.push('}');
-    Blockly.C.definitions_['lists_repeat'] = func.join('\n');
+    Blockly.ARDUINO.definitions_['lists_repeat'] = func.join('\n');
   }
-  var argument0 = Blockly.C.valueToCode(this, 'ITEM', true) || 'null';
-  var argument1 = Blockly.C.valueToCode(this, 'NUM', true) || '0';
-  return Blockly.C.lists_repeat.repeat + '(' + argument0 + ', ' + argument1 + ')';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'ITEM', true) || 'null';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'NUM', true) || '0';
+  return Blockly.ARDUINO.lists_repeat.repeat + '(' + argument0 + ', ' + argument1 + ')';
 };
 
-Blockly.C.lists_length = function(opt_dropParens) {
+Blockly.ARDUINO.lists_length = function(opt_dropParens) {
   // Testing the length of a list is the same as for a string.
-  return Blockly.C.text_length.call(this, opt_dropParens);
+  return Blockly.ARDUINO.text_length.call(this, opt_dropParens);
 };
 
-Blockly.C.lists_isEmpty = function(opt_dropParens) {
+Blockly.ARDUINO.lists_isEmpty = function(opt_dropParens) {
   // Testing a list for being empty is the same as for a string.
-  return Blockly.C.text_isEmpty.call(this, opt_dropParens);
+  return Blockly.ARDUINO.text_isEmpty.call(this, opt_dropParens);
 };
 
-Blockly.C.lists_indexOf = function(opt_dropParens) {
+Blockly.ARDUINO.lists_indexOf = function(opt_dropParens) {
   // Searching a list for a value is the same as search for a substring.
-  return Blockly.C.text_indexOf.call(this, opt_dropParens);
+  return Blockly.ARDUINO.text_indexOf.call(this, opt_dropParens);
 };
 
-Blockly.C.lists_getIndex = function(opt_dropParens) {
+Blockly.ARDUINO.lists_getIndex = function(opt_dropParens) {
   // Indexing into a list is the same as indexing into a string.
-  return Blockly.C.text_charAt.call(this, opt_dropParens);
+  return Blockly.ARDUINO.text_charAt.call(this, opt_dropParens);
 };
 
-Blockly.C.lists_setIndex = function() {
+Blockly.ARDUINO.lists_setIndex = function() {
   // Set element at index.
-  var argument0 = Blockly.C.valueToCode(this, 'AT', true) || '1';
-  var argument1 = Blockly.C.valueToCode(this, 'LIST') || '[]';
-  var argument2 = Blockly.C.valueToCode(this, 'TO', true) || 'null';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'AT', true) || '1';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'LIST') || '[]';
+  var argument2 = Blockly.ARDUINO.valueToCode(this, 'TO', true) || 'null';
   // Blockly uses one-based indicies.
   if (argument0.match(/^\d+$/)) {
     // If the index is a naked number, decrement it right now.

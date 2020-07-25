@@ -26,21 +26,21 @@
 
 Blockly.C = Blockly.Generator.get('C');
 
-Blockly.C.text = function() {
+Blockly.ARDUINO.text = function() {
   // Text value.
-  return Blockly.C.quote_(this.getTitleText('TEXT'));
+  return Blockly.ARDUINO.quote_(this.getTitleText('TEXT'));
 };
 
-Blockly.C.text_join = function(opt_dropParens) {
+Blockly.ARDUINO.text_join = function(opt_dropParens) {
   // Create a string made up of any number of elements of any type.
   if (this.itemCount_ == 0) {
     return '\'\'';
   } else if (this.itemCount_ == 1) {
-    var argument0 = Blockly.C.valueToCode(this, 'ADD0', true) || '\'\'';
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'ADD0', true) || '\'\'';
     return 'String(' + argument0 + ')';
   } else if (this.itemCount_ == 2) {
-    var argument0 = Blockly.C.valueToCode(this, 'ADD0', true) || '\'\'';
-    var argument1 = Blockly.C.valueToCode(this, 'ADD1', true) || '\'\'';
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'ADD0', true) || '\'\'';
+    var argument1 = Blockly.ARDUINO.valueToCode(this, 'ADD1', true) || '\'\'';
     var code = 'String(' + argument0 + ') + String(' + argument1 + ')';
     if (!opt_dropParens) {
       code = '(' + code + ')';
@@ -49,49 +49,49 @@ Blockly.C.text_join = function(opt_dropParens) {
   } else {
     var code = new Array(this.itemCount_);
     for (n = 0; n < this.itemCount_; n++) {
-      code[n] = Blockly.C.valueToCode(this, 'ADD' + n, true) || '\'\'';
+      code[n] = Blockly.ARDUINO.valueToCode(this, 'ADD' + n, true) || '\'\'';
     }
     return '[' + code.join(',') + '].join(\'\')';
   }
 };
 
-Blockly.C.text_length = function() {
+Blockly.ARDUINO.text_length = function() {
   // String length.
-  var argument0 = Blockly.C.valueToCode(this, 'VALUE') || '\'\'';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'VALUE') || '\'\'';
   return argument0 + '.length';
 };
 
-Blockly.C.text_isEmpty = function() {
+Blockly.ARDUINO.text_isEmpty = function() {
   // Is the string null?
-  var argument0 = Blockly.C.valueToCode(this, 'VALUE') || '\'\'';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'VALUE') || '\'\'';
   return '!' + argument0 + '.length';
 };
 
-Blockly.C.text_endString = function() {
+Blockly.ARDUINO.text_endString = function() {
   // Return a leading or trailing substring.
   var first = this.getInputLabelValue('NUM') == 'FIRST';
   var code;
   if (first) {
-    var argument0 = Blockly.C.valueToCode(this, 'NUM', true) || '1';
-    var argument1 = Blockly.C.valueToCode(this, 'TEXT') || '\'\'';
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'NUM', true) || '1';
+    var argument1 = Blockly.ARDUINO.valueToCode(this, 'TEXT') || '\'\'';
     code = argument1 + '.substring(0, ' + argument0 + ')';
   } else {
-    var argument0 = Blockly.C.valueToCode(this, 'NUM') || '1';
-    var argument1 = Blockly.C.valueToCode(this, 'TEXT', true) || '\'\'';
-    var tempVar = Blockly.C.variableDB_.getDistinctName('temp_text',
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'NUM') || '1';
+    var argument1 = Blockly.ARDUINO.valueToCode(this, 'TEXT', true) || '\'\'';
+    var tempVar = Blockly.ARDUINO.variableDB_.getDistinctName('temp_text',
         Blockly.Variables.NAME_TYPE);
-    Blockly.C.definitions_['variables'] += '\nvar ' + tempVar + ';';
+    Blockly.ARDUINO.definitions_['variables'] += '\nvar ' + tempVar + ';';
     code = '[' + tempVar + ' = ' + argument1 + ', ' +
         tempVar + '.substring(' + tempVar + '.length - ' + argument0 + ')][1]';
   }
   return code;
 };
 
-Blockly.C.text_indexOf = function(opt_dropParens) {
+Blockly.ARDUINO.text_indexOf = function(opt_dropParens) {
   // Search the text for a substring.
   var operator = this.getTitleValue('END') == 'FIRST' ? 'indexOf' : 'lastIndexOf';
-  var argument0 = Blockly.C.valueToCode(this, 'FIND') || '\'\'';
-  var argument1 = Blockly.C.valueToCode(this, 'VALUE') || '\'\'';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'FIND') || '\'\'';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'VALUE') || '\'\'';
   var code = argument1 + '.' + operator + '(' + argument0 + ') + 1';
   if (!opt_dropParens) {
     code = '(' + code + ')';
@@ -99,10 +99,10 @@ Blockly.C.text_indexOf = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.text_charAt = function() {
+Blockly.ARDUINO.text_charAt = function() {
   // Get letter at index.
-  var argument0 = Blockly.C.valueToCode(this, 'AT', true) || '1';
-  var argument1 = Blockly.C.valueToCode(this, 'VALUE') || '[]';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'AT', true) || '1';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'VALUE') || '[]';
   // Blockly uses one-based indicies.
   if (argument0.match(/^\d+$/)) {
     // If the index is a naked number, decrement it right now.
@@ -114,63 +114,63 @@ Blockly.C.text_charAt = function() {
   return argument1 + '[' + argument0 + ']';
 };
 
-Blockly.C.text_changeCase = function() {
+Blockly.ARDUINO.text_changeCase = function() {
   // Change capitalization.
   var mode = this.getInputLabelValue('TEXT');
-  var operator = Blockly.C.text_changeCase.OPERATORS[mode];
+  var operator = Blockly.ARDUINO.text_changeCase.OPERATORS[mode];
   var code;
   if (operator) {
-    // Upper and lower case are functions built into C.
-    var argument0 = Blockly.C.valueToCode(this, 'TEXT') || '\'\'';
+    // Upper and lower case are functions built into ARDUINO.
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'TEXT') || '\'\'';
     code = argument0 + operator;
   } else {
-    if (!Blockly.C.definitions_['text_toTitleCase']) {
+    if (!Blockly.ARDUINO.definitions_['text_toTitleCase']) {
       // Title case is not a native C function.  Define one.
-      var functionName = Blockly.C.variableDB_.getDistinctName('text_toTitleCase',
+      var functionName = Blockly.ARDUINO.variableDB_.getDistinctName('text_toTitleCase',
           Blockly.Generator.NAME_TYPE);
-      Blockly.C.text_changeCase.toTitleCase = functionName;
+      Blockly.ARDUINO.text_changeCase.toTitleCase = functionName;
       var func = [];
       func.push('function ' + functionName + '(str) {');
       func.push('  return str.replace(/\\w\\S*/g,');
       func.push('      function(txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});');
       func.push('}');
-      Blockly.C.definitions_['text_toTitleCase'] = func.join('\n');
+      Blockly.ARDUINO.definitions_['text_toTitleCase'] = func.join('\n');
     }
-    var argument0 = Blockly.C.valueToCode(this, 'TEXT', true) || '\'\'';
-    code = Blockly.C.text_changeCase.toTitleCase + '(' + argument0 + ')';
+    var argument0 = Blockly.ARDUINO.valueToCode(this, 'TEXT', true) || '\'\'';
+    code = Blockly.ARDUINO.text_changeCase.toTitleCase + '(' + argument0 + ')';
   }
   return code;
 };
 
-Blockly.C.text_changeCase.OPERATORS = {
+Blockly.ARDUINO.text_changeCase.OPERATORS = {
   UPPERCASE: '.toUpperCase()',
   LOWERCASE: '.toLowerCase()',
   TITLECASE: null
 };
 
-Blockly.C.text_trim = function() {
+Blockly.ARDUINO.text_trim = function() {
   // Trim spaces.
   var mode = this.getTitleValue('MODE');
-  var operator = Blockly.C.text_trim.OPERATORS[mode];
-  var argument0 = Blockly.C.valueToCode(this, 'TEXT') || '\'\'';
+  var operator = Blockly.ARDUINO.text_trim.OPERATORS[mode];
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'TEXT') || '\'\'';
   return argument0 + operator;
 };
 
-Blockly.C.text_trim.OPERATORS = {
+Blockly.ARDUINO.text_trim.OPERATORS = {
   LEFT: '.replace(/^\\s+/, \'\')',
   RIGHT: '.replace(/\\s+$/, \'\')',
   BOTH: '.replace(/^\\s+|\\s+$/g, \'\')'
 };
 
-Blockly.C.text_print = function() {
+Blockly.ARDUINO.text_print = function() {
   // Print statement.
-  var argument0 = Blockly.C.valueToCode(this, 'TEXT', true) || '\'\'';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'TEXT', true) || '\'\'';
   return 'window.alert(' + argument0 + ');\n';
 };
 
-Blockly.C.text_prompt = function() {
+Blockly.ARDUINO.text_prompt = function() {
   // Prompt function.
-  var msg = Blockly.C.quote_(this.getTitleValue('TEXT'));
+  var msg = Blockly.ARDUINO.quote_(this.getTitleValue('TEXT'));
   var code = 'window.prompt(' + msg + ')';
   var toNumber = this.getTitleValue('TYPE') == 'NUMBER';
   if (toNumber) {

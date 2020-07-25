@@ -26,12 +26,12 @@
 
 Blockly.C = Blockly.Generator.get('C');
 
-Blockly.C.procedures_defreturn = function() {
+Blockly.ARDUINO.procedures_defreturn = function() {
   // Define a procedure with a return value.
-  var funcName = Blockly.C.variableDB_.getName(this.getTitleText('NAME'),
+  var funcName = Blockly.ARDUINO.variableDB_.getName(this.getTitleText('NAME'),
       Blockly.Procedures.NAME_TYPE);
-  var branch = Blockly.C.statementToCode(this, 'STACK');
-  var returnValue = Blockly.C.valueToCode(this, 'RETURN', true) || '';
+  var branch = Blockly.ARDUINO.statementToCode(this, 'STACK');
+  var returnValue = Blockly.ARDUINO.valueToCode(this, 'RETURN', true) || '';
   if (returnValue) {
     returnValue = '  return ' + returnValue + ';\n';
   }
@@ -43,38 +43,37 @@ Blockly.C.procedures_defreturn = function() {
 
 
   var code = type + ' ' + funcName + '() {\n' + branch + returnValue + '}\n';
-  code = Blockly.C.scrub_(this, code);
-  Blockly.C.definitions_[funcName] = code;
+  code = Blockly.ARDUINO.scrub_(this, code);
+  Blockly.ARDUINO.definitions_[funcName] = code;
   return null;
 };
 
-// Defining a procedure without a return value 
-Blockly.C.procedures_defnoreturn = function() {
+// Defining a procedure without a return value
+Blockly.ARDUINO.procedures_defnoreturn = function() {
   // Define a procedure with a return value.
-  var funcName = Blockly.C.variableDB_.getName(this.getTitleText('NAME'),
+  var funcName = Blockly.ARDUINO.variableDB_.getName(this.getTitleText('NAME'),
       Blockly.Procedures.NAME_TYPE);
-  var branch = Blockly.C.statementToCode(this, 'STACK');
+  var branch = Blockly.ARDUINO.statementToCode(this, 'STACK');
 
   var code = 'void ' + funcName + '() {\n' + branch + '}\n';
-  code = Blockly.C.scrub_(this, code);
-  Blockly.C.definitions_[funcName] = code;
+  code = Blockly.ARDUINO.scrub_(this, code);
+  Blockly.ARDUINO.definitions_[funcName] = code;
   return null;
 };
 
 
-Blockly.C.procedures_callreturn = function() {
+Blockly.ARDUINO.procedures_callreturn = function() {
   // Call a procedure with a return value.
-  var funcName = Blockly.C.variableDB_.getName(this.getTitleText('NAME'),
+  var funcName = Blockly.ARDUINO.variableDB_.getName(this.getTitleText('NAME'),
       Blockly.Procedures.NAME_TYPE);
   var code = funcName + '()';
   return code;
 };
 
-Blockly.C.procedures_callnoreturn = function() {
+Blockly.ARDUINO.procedures_callnoreturn = function() {
   // Call a procedure with no return value.
-  var funcName = Blockly.C.variableDB_.getName(this.getTitleText('NAME'),
+  var funcName = Blockly.ARDUINO.variableDB_.getName(this.getTitleText('NAME'),
       Blockly.Procedures.NAME_TYPE);
   var code = funcName + '();\n';
   return code;
 };
-

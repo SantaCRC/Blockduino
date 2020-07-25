@@ -26,12 +26,12 @@
 
 Blockly.C = Blockly.Generator.get('C');
 
-Blockly.C.logic_compare = function(opt_dropParens) {
+Blockly.ARDUINO.logic_compare = function(opt_dropParens) {
   // Comparison operator.
   var mode = this.getInputLabelValue('B');
-  var operator = Blockly.C.logic_compare.OPERATORS[mode];
-  var argument0 = Blockly.C.valueToCode(this, 'A') || '0';
-  var argument1 = Blockly.C.valueToCode(this, 'B') || '0';
+  var operator = Blockly.ARDUINO.logic_compare.OPERATORS[mode];
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'A') || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'B') || '0';
   var code = argument0 + ' ' + operator + ' ' + argument1;
   if (!opt_dropParens) {
     code = '(' + code + ')';
@@ -39,7 +39,7 @@ Blockly.C.logic_compare = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.logic_compare.OPERATORS = {
+Blockly.ARDUINO.logic_compare.OPERATORS = {
   EQ: '==',
   NEQ: '!=',
   LT: '<',
@@ -48,10 +48,10 @@ Blockly.C.logic_compare.OPERATORS = {
   GTE: '>='
 };
 
-Blockly.C.logic_operation = function(opt_dropParens) {
+Blockly.ARDUINO.logic_operation = function(opt_dropParens) {
   // Operations 'and', 'or'.
-  var argument0 = Blockly.C.valueToCode(this, 'A') || 'false';
-  var argument1 = Blockly.C.valueToCode(this, 'B') || 'false';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'A') || 'false';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'B') || 'false';
   var operator = (this.getInputLabelValue('B') == 'AND') ? '&&' : '||';
   var code = argument0 + ' ' + operator + ' ' + argument1;
   if (!opt_dropParens) {
@@ -60,9 +60,9 @@ Blockly.C.logic_operation = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.logic_negate = function(opt_dropParens) {
+Blockly.ARDUINO.logic_negate = function(opt_dropParens) {
   // Negation.
-  var argument0 = Blockly.C.valueToCode(this, 'BOOL') || 'false';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'BOOL') || 'false';
   var code = '!' + argument0;
   if (!opt_dropParens) {
     code = '(' + code + ')';
@@ -70,7 +70,7 @@ Blockly.C.logic_negate = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.logic_boolean = function() {
+Blockly.ARDUINO.logic_boolean = function() {
   // Boolean values true and false.
   return (this.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
 };

@@ -24,18 +24,18 @@
  * to language files.
  */
 
-Blockly.C = Blockly.Generator.get('C');
-
-Blockly.C.variables_get = function() {
+goog.provide('Blockly.ARDUINO.variables');
+goog.require('Blockly.ARDUINO');
+Blockly.ARDUINO.variables_get = function() {
   // Variable getter.
-  return Blockly.C.variableDB_.getName(this.getTitleText('VAR'),
+  return Blockly.ARDUINO.variableDB_.getName(this.getTitleText('VAR'),
       Blockly.Variables.NAME_TYPE);
 };
 
-Blockly.C.variables_set = function() {
+Blockly.ARDUINO.variables_set = function() {
   // Variable setter.
-  var argument0 = Blockly.C.valueToCode(this, 'VALUE', true) || '0';
-  var varName = Blockly.C.variableDB_.getName(
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'VALUE', true) || '0';
+  var varName = Blockly.ARDUINO.variableDB_.getName(
       this.getTitleText('VAR'), Blockly.Variables.NAME_TYPE);
   return varName + ' = ' + argument0 + ';\n';
 };

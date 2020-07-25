@@ -26,22 +26,22 @@
 
 Blockly.C = Blockly.Generator.get('C');
 
-Blockly.C.math_number = function() {
+Blockly.ARDUINO.math_number = function() {
   // Numeric value.
   return window.parseFloat(this.getTitleText('NUM'));
 };
 
-Blockly.C.math_arithmetic = function(opt_dropParens) {
+Blockly.ARDUINO.math_arithmetic = function(opt_dropParens) {
   // Basic arithmetic operators, and power.
-  var argument0 = Blockly.C.valueToCode(this, 'A') || '0';
-  var argument1 = Blockly.C.valueToCode(this, 'B') || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'A') || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'B') || '0';
   var code;
 
   var mode = this.getInputLabelValue('B');
   if (mode == 'POWER') {
     code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
   } else {
-    var operator = Blockly.C.math_arithmetic.OPERATORS[mode];
+    var operator = Blockly.ARDUINO.math_arithmetic.OPERATORS[mode];
     code = argument0 + operator + argument1;
     if (!opt_dropParens) {
       code = '(' + code + ')';
@@ -50,26 +50,26 @@ Blockly.C.math_arithmetic = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.math_arithmetic.OPERATORS = {
+Blockly.ARDUINO.math_arithmetic.OPERATORS = {
   ADD: ' + ',
   MINUS: ' - ',
   MULTIPLY: ' * ',
   DIVIDE: ' / '
 };
 
-Blockly.C.math_change = function() {
+Blockly.ARDUINO.math_change = function() {
   // Add to a variable in place.
-  var argument0 = Blockly.C.valueToCode(this, 'DELTA') || '0';
-  var varName = Blockly.C.variableDB_.getName(this.getTitleText('VAR'),
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'DELTA') || '0';
+  var varName = Blockly.ARDUINO.variableDB_.getName(this.getTitleText('VAR'),
       Blockly.Variables.NAME_TYPE);
   return varName + ' = (typeof ' + varName + ' == \'number\' ? ' + varName +
       ' : 0) + ' + argument0 + ';\n';
 };
 
-Blockly.C.math_single = function(opt_dropParens) {
+Blockly.ARDUINO.math_single = function(opt_dropParens) {
   // Math operators with single operand.
-  var argNaked = Blockly.C.valueToCode(this, 'NUM', true) || '0';
-  var argParen = Blockly.C.valueToCode(this, 'NUM', false) || '0';
+  var argNaked = Blockly.ARDUINO.valueToCode(this, 'NUM', true) || '0';
+  var argParen = Blockly.ARDUINO.valueToCode(this, 'NUM', false) || '0';
   var operator = this.getInputLabelValue('NUM');
   var code;
   // First, handle cases which generate values that don't need parentheses wrapping the code.
@@ -138,14 +138,14 @@ Blockly.C.math_single = function(opt_dropParens) {
 };
 
 // Rounding functions have a single operand.
-Blockly.C.math_round = Blockly.C.math_single;
+Blockly.ARDUINO.math_round = Blockly.ARDUINO.math_single;
 // Trigonometry functions have a single operand.
-Blockly.C.math_trig = Blockly.C.math_single;
+Blockly.ARDUINO.math_trig = Blockly.ARDUINO.math_single;
 
-Blockly.C.math_on_list = function() {
+Blockly.ARDUINO.math_on_list = function() {
   // Rounding functions.
   func = this.getTitleValue('OP');
-  list = Blockly.C.valueToCode(this, 'LIST', true) || '[]';
+  list = Blockly.ARDUINO.valueToCode(this, 'LIST', true) || '[]';
   var code;
   switch (func) {
     case 'SUM':
@@ -162,10 +162,10 @@ Blockly.C.math_on_list = function() {
       '.length)';
       break;
     case 'MEDIAN':
-      if (!Blockly.C.definitions_['math_median']) {
-        var functionName = Blockly.C.variableDB_.getDistinctName(
+      if (!Blockly.ARDUINO.definitions_['math_median']) {
+        var functionName = Blockly.ARDUINO.variableDB_.getDistinctName(
             'math_median', Blockly.Generator.NAME_TYPE);
-        Blockly.C.math_on_list.math_median = functionName;
+        Blockly.ARDUINO.math_on_list.math_median = functionName;
         // Median is not a native C function.  Define one.
         // May need to handle null.
         // Currently math_median([null,null,1,3]) == 0.5.
@@ -180,15 +180,15 @@ Blockly.C.math_on_list = function() {
         func.push('    return localList[(localList.length - 1) / 2];');
         func.push('  }');
         func.push('}');
-        Blockly.C.definitions_['math_median'] = func.join('\n');
+        Blockly.ARDUINO.definitions_['math_median'] = func.join('\n');
       }
-      code = Blockly.C.math_on_list.math_median + '(' + list + ')';
+      code = Blockly.ARDUINO.math_on_list.math_median + '(' + list + ')';
       break;
     case 'MODE':
-      if (!Blockly.C.definitions_['math_modes']) {
-        var functionName = Blockly.C.variableDB_.getDistinctName(
+      if (!Blockly.ARDUINO.definitions_['math_modes']) {
+        var functionName = Blockly.ARDUINO.variableDB_.getDistinctName(
             'math_modes', Blockly.Generator.NAME_TYPE);
-        Blockly.C.math_on_list.math_modes = functionName;
+        Blockly.ARDUINO.math_on_list.math_modes = functionName;
         // As a list of numbers can contain more than one mode,
         // the returned result is provided as an array.
         // Mode of [3, 'x', 'x', 1, 1, 2, '3'] -> ['x', 1].
@@ -221,15 +221,15 @@ Blockly.C.math_on_list = function() {
         func.push('  }');
         func.push('  return modes;');
         func.push('}');
-        Blockly.C.definitions_['math_modes'] = func.join('\n');
+        Blockly.ARDUINO.definitions_['math_modes'] = func.join('\n');
       }
-      code = Blockly.C.math_on_list.math_modes + '(' + list + ')';
+      code = Blockly.ARDUINO.math_on_list.math_modes + '(' + list + ')';
       break;
     case 'STD_DEV':
-      if (!Blockly.C.definitions_['math_standard_deviation']) {
-        var functionName = Blockly.C.variableDB_.getDistinctName(
+      if (!Blockly.ARDUINO.definitions_['math_standard_deviation']) {
+        var functionName = Blockly.ARDUINO.variableDB_.getDistinctName(
             'math_standard_deviation', Blockly.Generator.NAME_TYPE);
-        Blockly.C.math_on_list.math_standard_deviation = functionName;
+        Blockly.ARDUINO.math_on_list.math_standard_deviation = functionName;
         var func = [];
         func.push('function ' + functionName + '(numbers) {');
         func.push('  var n = numbers.length;');
@@ -243,9 +243,9 @@ Blockly.C.math_on_list = function() {
         func.push('  standard_dev = Math.sqrt(variance);');
         func.push('  return standard_dev;');
         func.push('}');
-        Blockly.C.definitions_['math_standard_deviation'] = func.join('\n');
+        Blockly.ARDUINO.definitions_['math_standard_deviation'] = func.join('\n');
       }
-      code = Blockly.C.math_on_list.math_standard_deviation + '(' + list + ')';
+      code = Blockly.ARDUINO.math_on_list.math_standard_deviation + '(' + list + ')';
       break;
     case 'RANDOM':
       code = list + '[Math.floor(Math.random() * ' + list + '.length)]';
@@ -256,18 +256,18 @@ Blockly.C.math_on_list = function() {
   return code;
 };
 
-Blockly.C.math_constrain = function() {
+Blockly.ARDUINO.math_constrain = function() {
   // Constrain a number between two limits.
-  var argument0 = Blockly.C.valueToCode(this, 'VALUE', true) || '0';
-  var argument1 = Blockly.C.valueToCode(this, 'LOW', true) || '0';
-  var argument2 = Blockly.C.valueToCode(this, 'HIGH', true) || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'VALUE', true) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'LOW', true) || '0';
+  var argument2 = Blockly.ARDUINO.valueToCode(this, 'HIGH', true) || '0';
   return 'Math.min(Math.max(' + argument0 + ', ' + argument1 + '), ' + argument2 + ')';
 };
 
-Blockly.C.math_modulo = function(opt_dropParens) {
+Blockly.ARDUINO.math_modulo = function(opt_dropParens) {
   // Remainder computation.
-  var argument0 = Blockly.C.valueToCode(this, 'DIVIDEND') || '0';
-  var argument1 = Blockly.C.valueToCode(this, 'DIVISOR') || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'DIVIDEND') || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'DIVISOR') || '0';
   var code = argument0 + ' % ' + argument1;
   if (!opt_dropParens) {
     code = '(' + code + ')';
@@ -275,10 +275,10 @@ Blockly.C.math_modulo = function(opt_dropParens) {
   return code;
 };
 
-Blockly.C.math_random_int = function() {
+Blockly.ARDUINO.math_random_int = function() {
   // Random integer between [X] and [Y].
-  var argument0 = Blockly.C.valueToCode(this, 'FROM') || '0';
-  var argument1 = Blockly.C.valueToCode(this, 'TO') || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(this, 'FROM') || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(this, 'TO') || '0';
   var rand1 = 'Math.floor(Math.random() * (' + argument1 + ' - ' + argument0 + ' + 1' + ') + ' + argument0 + ')';
   var rand2 = 'Math.floor(Math.random() * (' + argument0 + ' - ' + argument1 + ' + 1' + ') + ' + argument1 + ')';
   var code;
@@ -294,7 +294,7 @@ Blockly.C.math_random_int = function() {
   return code;
 };
 
-Blockly.C.math_random_float = function() {
+Blockly.ARDUINO.math_random_float = function() {
   // Random fraction between 0 and 1.
   return 'Math.random()';
 };
