@@ -5,34 +5,34 @@
  */
 
 /**
- * @fileoverview Generating PHP for loop blocks.
+ * @fileoverview Generating ARDUINO for loop blocks.
  * @author daarond@gmail.com (Daaron Dwyer)
  */
 'use strict';
 
-goog.provide('Blockly.PHP.loops');
+goog.provide('Blockly.ARDUINO.loops');
 
-goog.require('Blockly.PHP');
+goog.require('Blockly.ARDUINO');
 
 
-Blockly.PHP['controls_repeat_ext'] = function(block) {
+Blockly.ARDUINO['controls_repeat_ext'] = function(block) {
   // Repeat n times.
   if (block.getField('TIMES')) {
     // Internal number.
     var repeats = String(Number(block.getFieldValue('TIMES')));
   } else {
     // External number.
-    var repeats = Blockly.PHP.valueToCode(block, 'TIMES',
-        Blockly.PHP.ORDER_ASSIGNMENT) || '0';
+    var repeats = Blockly.ARDUINO.valueToCode(block, 'TIMES',
+        Blockly.ARDUINO.ORDER_ASSIGNMENT) || '0';
   }
-  var branch = Blockly.PHP.statementToCode(block, 'DO');
-  branch = Blockly.PHP.addLoopTrap(branch, block);
+  var branch = Blockly.ARDUINO.statementToCode(block, 'DO');
+  branch = Blockly.ARDUINO.addLoopTrap(branch, block);
   var code = '';
-  var loopVar = Blockly.PHP.variableDB_.getDistinctName(
+  var loopVar = Blockly.ARDUINO.variableDB_.getDistinctName(
       'count', Blockly.VARIABLE_CATEGORY_NAME);
   var endVar = repeats;
   if (!repeats.match(/^\w+$/) && !Blockly.isNumber(repeats)) {
-    endVar = Blockly.PHP.variableDB_.getDistinctName(
+    endVar = Blockly.ARDUINO.variableDB_.getDistinctName(
         'repeat_end', Blockly.VARIABLE_CATEGORY_NAME);
     code += endVar + ' = ' + repeats + ';\n';
   }
@@ -43,34 +43,34 @@ Blockly.PHP['controls_repeat_ext'] = function(block) {
   return code;
 };
 
-Blockly.PHP['controls_repeat'] = Blockly.PHP['controls_repeat_ext'];
+Blockly.ARDUINO['controls_repeat'] = Blockly.ARDUINO['controls_repeat_ext'];
 
-Blockly.PHP['controls_whileUntil'] = function(block) {
+Blockly.ARDUINO['controls_whileUntil'] = function(block) {
   // Do while/until loop.
   var until = block.getFieldValue('MODE') == 'UNTIL';
-  var argument0 = Blockly.PHP.valueToCode(block, 'BOOL',
-      until ? Blockly.PHP.ORDER_LOGICAL_NOT :
-      Blockly.PHP.ORDER_NONE) || 'false';
-  var branch = Blockly.PHP.statementToCode(block, 'DO');
-  branch = Blockly.PHP.addLoopTrap(branch, block);
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'BOOL',
+      until ? Blockly.ARDUINO.ORDER_LOGICAL_NOT :
+      Blockly.ARDUINO.ORDER_NONE) || 'false';
+  var branch = Blockly.ARDUINO.statementToCode(block, 'DO');
+  branch = Blockly.ARDUINO.addLoopTrap(branch, block);
   if (until) {
     argument0 = '!' + argument0;
   }
   return 'while (' + argument0 + ') {\n' + branch + '}\n';
 };
 
-Blockly.PHP['controls_for'] = function(block) {
+Blockly.ARDUINO['controls_for'] = function(block) {
   // For loop.
-  var variable0 = Blockly.PHP.variableDB_.getName(
+  var variable0 = Blockly.ARDUINO.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
-  var argument0 = Blockly.PHP.valueToCode(block, 'FROM',
-      Blockly.PHP.ORDER_ASSIGNMENT) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'TO',
-      Blockly.PHP.ORDER_ASSIGNMENT) || '0';
-  var increment = Blockly.PHP.valueToCode(block, 'BY',
-      Blockly.PHP.ORDER_ASSIGNMENT) || '1';
-  var branch = Blockly.PHP.statementToCode(block, 'DO');
-  branch = Blockly.PHP.addLoopTrap(branch, block);
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'FROM',
+      Blockly.ARDUINO.ORDER_ASSIGNMENT) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'TO',
+      Blockly.ARDUINO.ORDER_ASSIGNMENT) || '0';
+  var increment = Blockly.ARDUINO.valueToCode(block, 'BY',
+      Blockly.ARDUINO.ORDER_ASSIGNMENT) || '1';
+  var branch = Blockly.ARDUINO.statementToCode(block, 'DO');
+  branch = Blockly.ARDUINO.addLoopTrap(branch, block);
   var code;
   if (Blockly.isNumber(argument0) && Blockly.isNumber(argument1) &&
       Blockly.isNumber(increment)) {
@@ -91,19 +91,19 @@ Blockly.PHP['controls_for'] = function(block) {
     // Cache non-trivial values to variables to prevent repeated look-ups.
     var startVar = argument0;
     if (!argument0.match(/^\w+$/) && !Blockly.isNumber(argument0)) {
-      startVar = Blockly.PHP.variableDB_.getDistinctName(
+      startVar = Blockly.ARDUINO.variableDB_.getDistinctName(
           variable0 + '_start', Blockly.VARIABLE_CATEGORY_NAME);
       code += startVar + ' = ' + argument0 + ';\n';
     }
     var endVar = argument1;
     if (!argument1.match(/^\w+$/) && !Blockly.isNumber(argument1)) {
-      endVar = Blockly.PHP.variableDB_.getDistinctName(
+      endVar = Blockly.ARDUINO.variableDB_.getDistinctName(
           variable0 + '_end', Blockly.VARIABLE_CATEGORY_NAME);
       code += endVar + ' = ' + argument1 + ';\n';
     }
     // Determine loop direction at start, in case one of the bounds
     // changes during loop execution.
-    var incVar = Blockly.PHP.variableDB_.getDistinctName(
+    var incVar = Blockly.ARDUINO.variableDB_.getDistinctName(
         variable0 + '_inc', Blockly.VARIABLE_CATEGORY_NAME);
     code += incVar + ' = ';
     if (Blockly.isNumber(increment)) {
@@ -112,7 +112,7 @@ Blockly.PHP['controls_for'] = function(block) {
       code += 'abs(' + increment + ');\n';
     }
     code += 'if (' + startVar + ' > ' + endVar + ') {\n';
-    code += Blockly.PHP.INDENT + incVar + ' = -' + incVar + ';\n';
+    code += Blockly.ARDUINO.INDENT + incVar + ' = -' + incVar + ';\n';
     code += '}\n';
     code += 'for (' + variable0 + ' = ' + startVar + '; ' +
         incVar + ' >= 0 ? ' +
@@ -124,40 +124,40 @@ Blockly.PHP['controls_for'] = function(block) {
   return code;
 };
 
-Blockly.PHP['controls_forEach'] = function(block) {
+Blockly.ARDUINO['controls_forEach'] = function(block) {
   // For each loop.
-  var variable0 = Blockly.PHP.variableDB_.getName(
+  var variable0 = Blockly.ARDUINO.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
-  var argument0 = Blockly.PHP.valueToCode(block, 'LIST',
-      Blockly.PHP.ORDER_ASSIGNMENT) || '[]';
-  var branch = Blockly.PHP.statementToCode(block, 'DO');
-  branch = Blockly.PHP.addLoopTrap(branch, block);
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'LIST',
+      Blockly.ARDUINO.ORDER_ASSIGNMENT) || '[]';
+  var branch = Blockly.ARDUINO.statementToCode(block, 'DO');
+  branch = Blockly.ARDUINO.addLoopTrap(branch, block);
   var code = '';
   code += 'foreach (' + argument0 + ' as ' + variable0 +
       ') {\n' + branch + '}\n';
   return code;
 };
 
-Blockly.PHP['controls_flow_statements'] = function(block) {
+Blockly.ARDUINO['controls_flow_statements'] = function(block) {
   // Flow statements: continue, break.
   var xfix = '';
-  if (Blockly.PHP.STATEMENT_PREFIX) {
+  if (Blockly.ARDUINO.STATEMENT_PREFIX) {
     // Automatic prefix insertion is switched off for this block.  Add manually.
-    xfix += Blockly.PHP.injectId(Blockly.PHP.STATEMENT_PREFIX, block);
+    xfix += Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_PREFIX, block);
   }
-  if (Blockly.PHP.STATEMENT_SUFFIX) {
+  if (Blockly.ARDUINO.STATEMENT_SUFFIX) {
     // Inject any statement suffix here since the regular one at the end
     // will not get executed if the break/continue is triggered.
-    xfix += Blockly.PHP.injectId(Blockly.PHP.STATEMENT_SUFFIX, block);
+    xfix += Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_SUFFIX, block);
   }
-  if (Blockly.PHP.STATEMENT_PREFIX) {
+  if (Blockly.ARDUINO.STATEMENT_PREFIX) {
     var loop = Blockly.Constants.Loops
         .CONTROL_FLOW_IN_LOOP_CHECK_MIXIN.getSurroundLoop(block);
     if (loop && !loop.suppressPrefixSuffix) {
       // Inject loop's statement prefix here since the regular one at the end
       // of the loop will not get executed if 'continue' is triggered.
       // In the case of 'break', a prefix is needed due to the loop's suffix.
-      xfix += Blockly.PHP.injectId(Blockly.PHP.STATEMENT_PREFIX, loop);
+      xfix += Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_PREFIX, loop);
     }
   }
   switch (block.getFieldValue('FLOW')) {

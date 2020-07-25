@@ -5,17 +5,17 @@
  */
 
 /**
- * @fileoverview Generating PHP for dynamic variable blocks.
+ * @fileoverview Generating ARDUINO for dynamic variable blocks.
  * @author fenichel@google.com (Rachel Fenichel)
  */
 'use strict';
 
-goog.provide('Blockly.PHP.variablesDynamic');
+goog.provide('Blockly.ARDUINO.variablesDynamic');
 
-goog.require('Blockly.PHP');
-goog.require('Blockly.PHP.variables');
+goog.require('Blockly.ARDUINO');
+goog.require('Blockly.ARDUINO.variables');
 
 
-// PHP is dynamically typed.
-Blockly.PHP['variables_get_dynamic'] = Blockly.PHP['variables_get'];
-Blockly.PHP['variables_set_dynamic'] = Blockly.PHP['variables_set'];
+// ARDUINO is dynamically typed.
+Blockly.ARDUINO['variables_get_dynamic'] = Blockly.ARDUINO['variables_get'];
+Blockly.ARDUINO['variables_set_dynamic'] = Blockly.ARDUINO['variables_set'];

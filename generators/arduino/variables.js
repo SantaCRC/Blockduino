@@ -5,28 +5,28 @@
  */
 
 /**
- * @fileoverview Generating PHP for variable blocks.
+ * @fileoverview Generating ARDUINO for variable blocks.
  * @author daarond@gmail.com (Daaron Dwyer)
  */
 'use strict';
 
-goog.provide('Blockly.PHP.variables');
+goog.provide('Blockly.ARDUINO.variables');
 
-goog.require('Blockly.PHP');
+goog.require('Blockly.ARDUINO');
 
 
-Blockly.PHP['variables_get'] = function(block) {
+Blockly.ARDUINO['variables_get'] = function(block) {
     // Variable getter.
-    var code = Blockly.PHP.variableDB_.getName(block.getFieldValue('VAR'),
+    var code = Blockly.ARDUINO.variableDB_.getName(block.getFieldValue('VAR'),
         Blockly.VARIABLE_CATEGORY_NAME);
-    return [code, Blockly.PHP.ORDER_ATOMIC];
+    return [code, Blockly.ARDUINO.ORDER_ATOMIC];
 };
 
-Blockly.PHP['variables_set'] = function(block) {
+Blockly.ARDUINO['variables_set'] = function(block) {
     // Variable setter.
-    var argument0 = Blockly.PHP.valueToCode(block, 'VALUE',
-            Blockly.PHP.ORDER_ASSIGNMENT) || '0';
-    var varName = Blockly.PHP.variableDB_.getName(
+    var argument0 = Blockly.ARDUINO.valueToCode(block, 'VALUE',
+            Blockly.ARDUINO.ORDER_ASSIGNMENT) || '0';
+    var varName = Blockly.ARDUINO.variableDB_.getName(
         block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
     return varName + ' = ' + argument0 + ';\n';
 };

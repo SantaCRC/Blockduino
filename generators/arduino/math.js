@@ -5,21 +5,21 @@
  */
 
 /**
- * @fileoverview Generating PHP for math blocks.
+ * @fileoverview Generating ARDUINO for math blocks.
  * @author daarond@gmail.com (Daaron Dwyer)
  */
 'use strict';
 
-goog.provide('Blockly.PHP.math');
+goog.provide('Blockly.ARDUINO.math');
 
-goog.require('Blockly.PHP');
+goog.require('Blockly.ARDUINO');
 
 
-Blockly.PHP['math_number'] = function(block) {
+Blockly.ARDUINO['math_number'] = function(block) {
   // Numeric value.
   var code = Number(block.getFieldValue('NUM'));
-  var order = code >= 0 ? Blockly.PHP.ORDER_ATOMIC :
-              Blockly.PHP.ORDER_UNARY_NEGATION;
+  var order = code >= 0 ? Blockly.ARDUINO.ORDER_ATOMIC :
+              Blockly.ARDUINO.ORDER_UNARY_NEGATION;
   if (code == Infinity) {
     code = 'INF';
   } else if (code == -Infinity) {
@@ -28,46 +28,46 @@ Blockly.PHP['math_number'] = function(block) {
   return [code, order];
 };
 
-Blockly.PHP['math_arithmetic'] = function(block) {
+Blockly.ARDUINO['math_arithmetic'] = function(block) {
   // Basic arithmetic operators, and power.
   var OPERATORS = {
-    'ADD': [' + ', Blockly.PHP.ORDER_ADDITION],
-    'MINUS': [' - ', Blockly.PHP.ORDER_SUBTRACTION],
-    'MULTIPLY': [' * ', Blockly.PHP.ORDER_MULTIPLICATION],
-    'DIVIDE': [' / ', Blockly.PHP.ORDER_DIVISION],
-    'POWER': [' ** ', Blockly.PHP.ORDER_POWER]
+    'ADD': [' + ', Blockly.ARDUINO.ORDER_ADDITION],
+    'MINUS': [' - ', Blockly.ARDUINO.ORDER_SUBTRACTION],
+    'MULTIPLY': [' * ', Blockly.ARDUINO.ORDER_MULTIPLICATION],
+    'DIVIDE': [' / ', Blockly.ARDUINO.ORDER_DIVISION],
+    'POWER': [' ** ', Blockly.ARDUINO.ORDER_POWER]
   };
   var tuple = OPERATORS[block.getFieldValue('OP')];
   var operator = tuple[0];
   var order = tuple[1];
-  var argument0 = Blockly.PHP.valueToCode(block, 'A', order) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'B', order) || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'A', order) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'B', order) || '0';
   var code = argument0 + operator + argument1;
   return [code, order];
 };
 
-Blockly.PHP['math_single'] = function(block) {
+Blockly.ARDUINO['math_single'] = function(block) {
   // Math operators with single operand.
   var operator = block.getFieldValue('OP');
   var code;
   var arg;
   if (operator == 'NEG') {
     // Negation is a special case given its different operator precedence.
-    arg = Blockly.PHP.valueToCode(block, 'NUM',
-        Blockly.PHP.ORDER_UNARY_NEGATION) || '0';
+    arg = Blockly.ARDUINO.valueToCode(block, 'NUM',
+        Blockly.ARDUINO.ORDER_UNARY_NEGATION) || '0';
     if (arg[0] == '-') {
       // --3 is not legal in JS.
       arg = ' ' + arg;
     }
     code = '-' + arg;
-    return [code, Blockly.PHP.ORDER_UNARY_NEGATION];
+    return [code, Blockly.ARDUINO.ORDER_UNARY_NEGATION];
   }
   if (operator == 'SIN' || operator == 'COS' || operator == 'TAN') {
-    arg = Blockly.PHP.valueToCode(block, 'NUM',
-        Blockly.PHP.ORDER_DIVISION) || '0';
+    arg = Blockly.ARDUINO.valueToCode(block, 'NUM',
+        Blockly.ARDUINO.ORDER_DIVISION) || '0';
   } else {
-    arg = Blockly.PHP.valueToCode(block, 'NUM',
-        Blockly.PHP.ORDER_NONE) || '0';
+    arg = Blockly.ARDUINO.valueToCode(block, 'NUM',
+        Blockly.ARDUINO.ORDER_NONE) || '0';
   }
   // First, handle cases which generate values that don't need parentheses
   // wrapping the code.
@@ -107,7 +107,7 @@ Blockly.PHP['math_single'] = function(block) {
       break;
   }
   if (code) {
-    return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+    return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
   }
   // Second, handle cases which generate values that may need parentheses
   // wrapping the code.
@@ -127,34 +127,34 @@ Blockly.PHP['math_single'] = function(block) {
     default:
       throw Error('Unknown math operator: ' + operator);
   }
-  return [code, Blockly.PHP.ORDER_DIVISION];
+  return [code, Blockly.ARDUINO.ORDER_DIVISION];
 };
 
-Blockly.PHP['math_constant'] = function(block) {
+Blockly.ARDUINO['math_constant'] = function(block) {
   // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
   var CONSTANTS = {
-    'PI': ['M_PI', Blockly.PHP.ORDER_ATOMIC],
-    'E': ['M_E', Blockly.PHP.ORDER_ATOMIC],
-    'GOLDEN_RATIO': ['(1 + sqrt(5)) / 2', Blockly.PHP.ORDER_DIVISION],
-    'SQRT2': ['M_SQRT2', Blockly.PHP.ORDER_ATOMIC],
-    'SQRT1_2': ['M_SQRT1_2', Blockly.PHP.ORDER_ATOMIC],
-    'INFINITY': ['INF', Blockly.PHP.ORDER_ATOMIC]
+    'PI': ['M_PI', Blockly.ARDUINO.ORDER_ATOMIC],
+    'E': ['M_E', Blockly.ARDUINO.ORDER_ATOMIC],
+    'GOLDEN_RATIO': ['(1 + sqrt(5)) / 2', Blockly.ARDUINO.ORDER_DIVISION],
+    'SQRT2': ['M_SQRT2', Blockly.ARDUINO.ORDER_ATOMIC],
+    'SQRT1_2': ['M_SQRT1_2', Blockly.ARDUINO.ORDER_ATOMIC],
+    'INFINITY': ['INF', Blockly.ARDUINO.ORDER_ATOMIC]
   };
   return CONSTANTS[block.getFieldValue('CONSTANT')];
 };
 
-Blockly.PHP['math_number_property'] = function(block) {
+Blockly.ARDUINO['math_number_property'] = function(block) {
   // Check if a number is even, odd, prime, whole, positive, or negative
   // or if it is divisible by certain number. Returns true or false.
-  var number_to_check = Blockly.PHP.valueToCode(block, 'NUMBER_TO_CHECK',
-      Blockly.PHP.ORDER_MODULUS) || '0';
+  var number_to_check = Blockly.ARDUINO.valueToCode(block, 'NUMBER_TO_CHECK',
+      Blockly.ARDUINO.ORDER_MODULUS) || '0';
   var dropdown_property = block.getFieldValue('PROPERTY');
   var code;
   if (dropdown_property == 'PRIME') {
     // Prime is a special case as it is not a one-liner test.
-    var functionName = Blockly.PHP.provideFunction_(
+    var functionName = Blockly.ARDUINO.provideFunction_(
         'math_isPrime',
-        ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '($n) {',
+        ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ + '($n) {',
          '  // https://en.wikipedia.org/wiki/Primality_test#Naive_methods',
          '  if ($n == 2 || $n == 3) {',
          '    return true;',
@@ -174,7 +174,7 @@ Blockly.PHP['math_number_property'] = function(block) {
          '  return true;',
          '}']);
     code = functionName + '(' + number_to_check + ')';
-    return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+    return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
   }
   switch (dropdown_property) {
     case 'EVEN':
@@ -193,80 +193,80 @@ Blockly.PHP['math_number_property'] = function(block) {
       code = number_to_check + ' < 0';
       break;
     case 'DIVISIBLE_BY':
-      var divisor = Blockly.PHP.valueToCode(block, 'DIVISOR',
-          Blockly.PHP.ORDER_MODULUS) || '0';
+      var divisor = Blockly.ARDUINO.valueToCode(block, 'DIVISOR',
+          Blockly.ARDUINO.ORDER_MODULUS) || '0';
       code = number_to_check + ' % ' + divisor + ' == 0';
       break;
   }
-  return [code, Blockly.PHP.ORDER_EQUALITY];
+  return [code, Blockly.ARDUINO.ORDER_EQUALITY];
 };
 
-Blockly.PHP['math_change'] = function(block) {
+Blockly.ARDUINO['math_change'] = function(block) {
   // Add to a variable in place.
-  var argument0 = Blockly.PHP.valueToCode(block, 'DELTA',
-      Blockly.PHP.ORDER_ADDITION) || '0';
-  var varName = Blockly.PHP.variableDB_.getName(
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'DELTA',
+      Blockly.ARDUINO.ORDER_ADDITION) || '0';
+  var varName = Blockly.ARDUINO.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
   return varName + ' += ' + argument0 + ';\n';
 };
 
 // Rounding functions have a single operand.
-Blockly.PHP['math_round'] = Blockly.PHP['math_single'];
+Blockly.ARDUINO['math_round'] = Blockly.ARDUINO['math_single'];
 // Trigonometry functions have a single operand.
-Blockly.PHP['math_trig'] = Blockly.PHP['math_single'];
+Blockly.ARDUINO['math_trig'] = Blockly.ARDUINO['math_single'];
 
-Blockly.PHP['math_on_list'] = function(block) {
+Blockly.ARDUINO['math_on_list'] = function(block) {
   // Math functions for lists.
   var func = block.getFieldValue('OP');
   var list, code;
   switch (func) {
     case 'SUM':
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_FUNCTION_CALL) || 'array()';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_FUNCTION_CALL) || 'array()';
       code = 'array_sum(' + list + ')';
       break;
     case 'MIN':
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_FUNCTION_CALL) || 'array()';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_FUNCTION_CALL) || 'array()';
       code = 'min(' + list + ')';
       break;
     case 'MAX':
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_FUNCTION_CALL) || 'array()';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_FUNCTION_CALL) || 'array()';
       code = 'max(' + list + ')';
       break;
     case 'AVERAGE':
-      var functionName = Blockly.PHP.provideFunction_(
+      var functionName = Blockly.ARDUINO.provideFunction_(
           'math_mean',
-          ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
               '($myList) {',
            '  return array_sum($myList) / count($myList);',
            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || 'array()';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_NONE) || 'array()';
       code = functionName + '(' + list + ')';
       break;
     case 'MEDIAN':
-      var functionName = Blockly.PHP.provideFunction_(
+      var functionName = Blockly.ARDUINO.provideFunction_(
           'math_median',
-          ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
               '($arr) {',
            '  sort($arr,SORT_NUMERIC);',
            '  return (count($arr) % 2) ? $arr[floor(count($arr)/2)] : ',
            '      ($arr[floor(count($arr)/2)] + $arr[floor(count($arr)/2)' +
               ' - 1]) / 2;',
            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_NONE) || '[]';
       code = functionName + '(' + list + ')';
       break;
     case 'MODE':
       // As a list of numbers can contain more than one mode,
       // the returned result is provided as an array.
       // Mode of [3, 'x', 'x', 1, 1, 2, '3'] -> ['x', 1].
-      var functionName = Blockly.PHP.provideFunction_(
+      var functionName = Blockly.ARDUINO.provideFunction_(
           'math_modes',
-          ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
               '($values) {',
            '  if (empty($values)) return array();',
            '  $counts = array_count_values($values);',
@@ -274,14 +274,14 @@ Blockly.PHP['math_on_list'] = function(block) {
            '  $modes = array_keys($counts, current($counts), true);',
            '  return $modes;',
            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_NONE) || '[]';
       code = functionName + '(' + list + ')';
       break;
     case 'STD_DEV':
-      var functionName = Blockly.PHP.provideFunction_(
+      var functionName = Blockly.ARDUINO.provideFunction_(
           'math_standard_deviation',
-          ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
               '($numbers) {',
            '  $n = count($numbers);',
            '  if (!$n) return null;',
@@ -290,60 +290,60 @@ Blockly.PHP['math_on_list'] = function(block) {
               'pow($num - $mean, 2);',
            '  return sqrt(array_sum($devs) / (count($devs) - 1));',
            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-              Blockly.PHP.ORDER_NONE) || '[]';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+              Blockly.ARDUINO.ORDER_NONE) || '[]';
       code = functionName + '(' + list + ')';
       break;
     case 'RANDOM':
-      var functionName = Blockly.PHP.provideFunction_(
+      var functionName = Blockly.ARDUINO.provideFunction_(
           'math_random_list',
-          ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
               '($list) {',
            '  $x = rand(0, count($list)-1);',
            '  return $list[$x];',
            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
+      list = Blockly.ARDUINO.valueToCode(block, 'LIST',
+          Blockly.ARDUINO.ORDER_NONE) || '[]';
       code = functionName + '(' + list + ')';
       break;
     default:
       throw Error('Unknown operator: ' + func);
   }
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['math_modulo'] = function(block) {
+Blockly.ARDUINO['math_modulo'] = function(block) {
   // Remainder computation.
-  var argument0 = Blockly.PHP.valueToCode(block, 'DIVIDEND',
-      Blockly.PHP.ORDER_MODULUS) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'DIVISOR',
-      Blockly.PHP.ORDER_MODULUS) || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'DIVIDEND',
+      Blockly.ARDUINO.ORDER_MODULUS) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'DIVISOR',
+      Blockly.ARDUINO.ORDER_MODULUS) || '0';
   var code = argument0 + ' % ' + argument1;
-  return [code, Blockly.PHP.ORDER_MODULUS];
+  return [code, Blockly.ARDUINO.ORDER_MODULUS];
 };
 
-Blockly.PHP['math_constrain'] = function(block) {
+Blockly.ARDUINO['math_constrain'] = function(block) {
   // Constrain a number between two limits.
-  var argument0 = Blockly.PHP.valueToCode(block, 'VALUE',
-      Blockly.PHP.ORDER_COMMA) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'LOW',
-      Blockly.PHP.ORDER_COMMA) || '0';
-  var argument2 = Blockly.PHP.valueToCode(block, 'HIGH',
-      Blockly.PHP.ORDER_COMMA) || 'Infinity';
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'VALUE',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'LOW',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
+  var argument2 = Blockly.ARDUINO.valueToCode(block, 'HIGH',
+      Blockly.ARDUINO.ORDER_COMMA) || 'Infinity';
   var code = 'min(max(' + argument0 + ', ' + argument1 + '), ' +
       argument2 + ')';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['math_random_int'] = function(block) {
+Blockly.ARDUINO['math_random_int'] = function(block) {
   // Random integer between [X] and [Y].
-  var argument0 = Blockly.PHP.valueToCode(block, 'FROM',
-      Blockly.PHP.ORDER_COMMA) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'TO',
-      Blockly.PHP.ORDER_COMMA) || '0';
-  var functionName = Blockly.PHP.provideFunction_(
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'FROM',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'TO',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
+  var functionName = Blockly.ARDUINO.provideFunction_(
       'math_random_int',
-      ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+      ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
           '($a, $b) {',
        '  if ($a > $b) {',
        '    return rand($b, $a);',
@@ -351,20 +351,20 @@ Blockly.PHP['math_random_int'] = function(block) {
        '  return rand($a, $b);',
        '}']);
   var code = functionName + '(' + argument0 + ', ' + argument1 + ')';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['math_random_float'] = function(block) {
+Blockly.ARDUINO['math_random_float'] = function(block) {
   // Random fraction between 0 and 1.
-  return ['(float)rand()/(float)getrandmax()', Blockly.PHP.ORDER_FUNCTION_CALL];
+  return ['(float)rand()/(float)getrandmax()', Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['math_atan2'] = function(block) {
+Blockly.ARDUINO['math_atan2'] = function(block) {
   // Arctangent of point (X, Y) in degrees from -180 to 180.
-  var argument0 = Blockly.PHP.valueToCode(block, 'X',
-      Blockly.PHP.ORDER_COMMA) || '0';
-  var argument1 = Blockly.PHP.valueToCode(block, 'Y',
-      Blockly.PHP.ORDER_COMMA) || '0';
+  var argument0 = Blockly.ARDUINO.valueToCode(block, 'X',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
+  var argument1 = Blockly.ARDUINO.valueToCode(block, 'Y',
+      Blockly.ARDUINO.ORDER_COMMA) || '0';
   return ['atan2(' + argument1 + ', ' + argument0 + ') / pi() * 180',
-      Blockly.PHP.ORDER_DIVISION];
+      Blockly.ARDUINO.ORDER_DIVISION];
 };

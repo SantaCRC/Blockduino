@@ -5,45 +5,45 @@
  */
 
 /**
- * @fileoverview Generating PHP for colour blocks.
+ * @fileoverview Generating ARDUINO for colour blocks.
  * @author daarond@gmail.com (Daaron Dwyer)
  */
 'use strict';
 
-goog.provide('Blockly.PHP.colour');
+goog.provide('Blockly.ARDUINO.colour');
 
-goog.require('Blockly.PHP');
+goog.require('Blockly.ARDUINO');
 
 
-Blockly.PHP['colour_picker'] = function(block) {
+Blockly.ARDUINO['colour_picker'] = function(block) {
   // Colour picker.
-  var code = Blockly.PHP.quote_(block.getFieldValue('COLOUR'));
-  return [code, Blockly.PHP.ORDER_ATOMIC];
+  var code = Blockly.ARDUINO.quote_(block.getFieldValue('COLOUR'));
+  return [code, Blockly.ARDUINO.ORDER_ATOMIC];
 };
 
-Blockly.PHP['colour_random'] = function(block) {
+Blockly.ARDUINO['colour_random'] = function(block) {
   // Generate a random colour.
-  var functionName = Blockly.PHP.provideFunction_(
+  var functionName = Blockly.ARDUINO.provideFunction_(
       'colour_random',
-      ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '() {',
+      ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ + '() {',
        '  return \'#\' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), ' +
           '6, \'0\', STR_PAD_LEFT);',
        '}']);
   var code = functionName + '()';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['colour_rgb'] = function(block) {
+Blockly.ARDUINO['colour_rgb'] = function(block) {
   // Compose a colour from RGB components expressed as percentages.
-  var red = Blockly.PHP.valueToCode(block, 'RED',
-      Blockly.PHP.ORDER_COMMA) || 0;
-  var green = Blockly.PHP.valueToCode(block, 'GREEN',
-      Blockly.PHP.ORDER_COMMA) || 0;
-  var blue = Blockly.PHP.valueToCode(block, 'BLUE',
-      Blockly.PHP.ORDER_COMMA) || 0;
-  var functionName = Blockly.PHP.provideFunction_(
+  var red = Blockly.ARDUINO.valueToCode(block, 'RED',
+      Blockly.ARDUINO.ORDER_COMMA) || 0;
+  var green = Blockly.ARDUINO.valueToCode(block, 'GREEN',
+      Blockly.ARDUINO.ORDER_COMMA) || 0;
+  var blue = Blockly.ARDUINO.valueToCode(block, 'BLUE',
+      Blockly.ARDUINO.ORDER_COMMA) || 0;
+  var functionName = Blockly.ARDUINO.provideFunction_(
       'colour_rgb',
-      ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+      ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
           '($r, $g, $b) {',
        '  $r = round(max(min($r, 100), 0) * 2.55);',
        '  $g = round(max(min($g, 100), 0) * 2.55);',
@@ -55,20 +55,20 @@ Blockly.PHP['colour_rgb'] = function(block) {
        '  return $hex;',
        '}']);
   var code = functionName + '(' + red + ', ' + green + ', ' + blue + ')';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PHP['colour_blend'] = function(block) {
+Blockly.ARDUINO['colour_blend'] = function(block) {
   // Blend two colours together.
-  var c1 = Blockly.PHP.valueToCode(block, 'COLOUR1',
-      Blockly.PHP.ORDER_COMMA) || '\'#000000\'';
-  var c2 = Blockly.PHP.valueToCode(block, 'COLOUR2',
-      Blockly.PHP.ORDER_COMMA) || '\'#000000\'';
-  var ratio = Blockly.PHP.valueToCode(block, 'RATIO',
-      Blockly.PHP.ORDER_COMMA) || 0.5;
-  var functionName = Blockly.PHP.provideFunction_(
+  var c1 = Blockly.ARDUINO.valueToCode(block, 'COLOUR1',
+      Blockly.ARDUINO.ORDER_COMMA) || '\'#000000\'';
+  var c2 = Blockly.ARDUINO.valueToCode(block, 'COLOUR2',
+      Blockly.ARDUINO.ORDER_COMMA) || '\'#000000\'';
+  var ratio = Blockly.ARDUINO.valueToCode(block, 'RATIO',
+      Blockly.ARDUINO.ORDER_COMMA) || 0.5;
+  var functionName = Blockly.ARDUINO.provideFunction_(
       'colour_blend',
-      ['function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+      ['function ' + Blockly.ARDUINO.FUNCTION_NAME_PLACEHOLDER_ +
           '($c1, $c2, $ratio) {',
        '  $ratio = max(min($ratio, 1), 0);',
        '  $r1 = hexdec(substr($c1, 1, 2));',
@@ -87,5 +87,5 @@ Blockly.PHP['colour_blend'] = function(block) {
        '  return $hex;',
        '}']);
   var code = functionName + '(' + c1 + ', ' + c2 + ', ' + ratio + ')';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [code, Blockly.ARDUINO.ORDER_FUNCTION_CALL];
 };
