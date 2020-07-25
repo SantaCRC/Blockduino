@@ -1,77 +1,27 @@
-# Blockly
+# Ardublockly package
+This package folder contains three components required to build and package the Ardublockly desktop application:
 
-Google's Blockly is a web-based, visual programming editor.  Users can drag
-blocks together to build programs.  All code is free and open source.
+* The [Electron][1] project to use Ardublockly as a desktop application
+* Python scripts required to build and package Ardublockly into a standalone executable.
+* Git submodule that contains the documentation (stored in the Ardublockly GitHub Wiki)
+ 
+The full build instruction can be found in the Ardublockly GitHub Wiki article [Building-Ardublockly][2].
 
-The source for this module is in the [Blockly repo](http://github.com/google/blockly).
+The build output can be distributed without any dependencies other than having the Arduino IDE.
 
-## Installation
+## Download the packaged Ardublockly
+The stable binaries for Windows, Linux, and Mac OS X are hosted in GitHub as part of the [repository releases][1].
 
-You can install this package either via ``npm`` or ``unpkg``.
+Development builds are triggered in the CI build servers on each git commit and are hosted in the following links:
 
-### npm
-```bash
-npm install blockly
-```
-
-### unpkg
-```html
-<script src="https://unpkg.com/blockly/blockly.min.js"></script>
-```
-
-## Example Usage
-
-```js
-import Blockly from 'blockly';
-Blockly.inject('blocklyDiv', {
-    ...
-})
-```
-
-## Samples
-
-For samples on how to integrate Blockly into your project, view the list of samples at [blockly-samples](https://github.com/google/blockly-samples).
+| Linux build         | Windows build       | Mac OS X build       |
+|:-------------------:|:-------------------:|:--------------------:|
+| [![Linux Build Status](https://circleci.com/gh/carlosperate/ardublockly/tree/master.svg?style=svg)](https://circleci.com/gh/carlosperate/ardublockly/tree/master) | [![Windows Build status](https://ci.appveyor.com/api/projects/status/t877g920hdiifc2i?svg=true)](https://ci.appveyor.com/project/carlosperate/ardublockly) | [![Mac Build Status](https://travis-ci.org/carlosperate/ardublockly.svg?branch=master)](https://travis-ci.org/carlosperate/ardublockly) |
+| [Download Link][11] | [Download Link][12] | [Download Link][13]  |
 
 
-### Importing Blockly
-
-When you import Blockly with ``import * as Blockly from 'blockly';`` you'll get the default modules:
-Blockly core, Blockly built-in blocks, the JavaScript generator and the English lang files. 
-
-If you need more flexibility, you'll want to define your imports more carefully: 
-
-#### Blockly Core
-
-```js
-import * as Blockly from 'blockly/core';
-```
-
-#### Blockly built in blocks
-
-```js
-import 'blockly/blocks';
-```
-
-#### Blockly Generators
-If your application needs to generate code from the Blockly blocks, you'll want to include a generator.
-
-```js
-import 'blockly/python';
-```
-to include the Python generator, you can also import ``blockly/javascript``, ``blockly/php``, ``blockly/dart`` and ``blockly/lua``.
-
-#### Blockly Languages
-
-```js
-import * as Fr from 'blockly/msg/fr';
-Blockly.setLocale(Fr);
-```
-
-To import the French lang files. Once you've imported the specific lang module, you'll also want to set the locale in Blockly.
-
-For a full list of supported Blockly locales, see: [https://github.com/google/blockly/tree/master/msg/js](https://github.com/google/blockly/tree/master/msg/js)
-
-
-## License
-
-Apache 2.0
+[1]: https://electron.atom.io
+[2]: https://github.com/carlosperate/ardublockly/wiki/Building-Ardublockly
+[11]: http://ardublockly-builds.s3-website-us-west-2.amazonaws.com/index.html?prefix=linux/
+[12]: http://ardublockly-builds.s3-website-us-west-2.amazonaws.com/index.html?prefix=windows/
+[13]: http://ardublockly-builds.s3-website-us-west-2.amazonaws.com/index.html?prefix=mac/
