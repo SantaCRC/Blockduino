@@ -23,8 +23,45 @@
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
+goog.provide('Blockly.ARDUINO.logic');
+goog.require('Blockly.ARDUINO');
+Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
-Blockly.C = Blockly.Generator.get('C');
+Blockly.ARDUINO['controls_if'] = function(block) {
+  // If/elseif/else condition.
+  var n = 0;
+  var code = '', branchCode, conditionCode;
+  if (Blockly.ARDUINO.STATEMENT_PREFIX) {
+    // Automatic prefix insertion is switched off for this block.  Add manually.
+    code += Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_PREFIX, block);
+  }
+  do {
+    conditionCode = Blockly.ARDUINO.valueToCode(block, 'IF' + n,
+        Blockly.ARDUINO.ORDER_NONE) || 'False';
+    branchCode = Blockly.ARDUINO.statementToCode(block, 'DO' + n) ||
+        Blockly.ARDUINO.PASS;
+    if (Blockly.ARDUINO.STATEMENT_SUFFIX) {
+      branchCode = Blockly.ARDUINO.prefixLines(
+          Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_SUFFIX, block),
+          Blockly.ARDUINO.INDENT) + branchCode;
+    }
+    code += (n == 0 ? 'if ' : 'elif ' ) + conditionCode + ':\n' + branchCode;
+    ++n;
+  } while (block.getInput('IF' + n));
+
+  if (block.getInput('ELSE') || Blockly.ARDUINO.STATEMENT_SUFFIX) {
+    branchCode = Blockly.ARDUINO.statementToCode(block, 'ELSE') ||
+        Blockly.ARDUINO.PASS;
+    if (Blockly.ARDUINO.STATEMENT_SUFFIX) {
+      branchCode = Blockly.ARDUINO.prefixLines(
+          Blockly.ARDUINO.injectId(Blockly.ARDUINO.STATEMENT_SUFFIX, block),
+          Blockly.ARDUINO.INDENT) + branchCode;
+    }
+    code += 'else:\n' + branchCode;
+  }
+  return code;
+};
+
 
 Blockly.ARDUINO.logic_compare = function(opt_dropParens) {
   // Comparison operator.

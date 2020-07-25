@@ -1,41 +1,57 @@
 /**
- * Visual Blocks Language
- *
- * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Created by Dinesh Liyanage on 9/11/2016.
  */
 
-/**
- * @fileoverview Generating C for variable blocks.
- * @author fraser@google.com (Neil Fraser)
- * Due to the frequency of long strings, the 80-column wrap rule need not apply
- * to language files.
- */
 
+// Why below providers have commented?
 goog.provide('Blockly.ARDUINO.variables');
 goog.require('Blockly.ARDUINO');
-Blockly.ARDUINO.variables_get = function() {
-  // Variable getter.
-  return Blockly.ARDUINO.variableDB_.getName(this.getTitleText('VAR'),
-      Blockly.Variables.NAME_TYPE);
+
+/**
+ * Code generation stub for variable block
+ * @param block
+ * @returns {string}
+ */
+Blockly.ARDUINO['variable'] = function(block) {
+    var dropdown_variabletype = block.getFieldValue('variableType');
+    var text_varname = block.getFieldValue('varName');
+    var code = '\t' + dropdown_variabletype + ' ' +text_varname + '= 0;\n';
+    return code;
 };
 
-Blockly.ARDUINO.variables_set = function() {
-  // Variable setter.
-  var argument0 = Blockly.ARDUINO.valueToCode(this, 'VALUE', true) || '0';
-  var varName = Blockly.ARDUINO.variableDB_.getName(
-      this.getTitleText('VAR'), Blockly.Variables.NAME_TYPE);
-  return varName + ' = ' + argument0 + ';\n';
+
+/**
+ * Code generation stub for parameter block
+ * @param block
+ * @returns {string}
+ */
+Blockly.ARDUINO['parameter'] = function(block) {
+  var text_parameter_name = block.getFieldValue('parameter-name');
+  var dropdown_name = block.getFieldValue('NAME');
+  var code = dropdown_name + ' ' + text_parameter_name + '$$'; //adding $$ to use it as a delimiter
+  return code;
+};
+/**
+ * Code generation stub for object variable block
+ * @param block
+ * @returns {string}
+ */
+
+Blockly.ARDUINO['class-instance-variable'] = function(block) {
+  var text_class_name = block.getFieldValue('class_name');
+  var text_var_name = block.getFieldValue('variable_name');
+  var code = text_class_name+' '+text_var_name+';\n';
+  return code;
+};
+/**
+ * Code generation stub for pointer variable block
+ * @param block
+ * @returns {string}
+ */
+
+Blockly.ARDUINO['object-pointer'] = function(block) {
+  var text_pointer_name = block.getFieldValue('pointer_name');
+  var class_name = block.getFieldValue('class_name');
+  var code = class_name+' '+'*'+text_pointer_name+';\n';
+  return code;
 };

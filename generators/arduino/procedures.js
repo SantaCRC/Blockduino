@@ -24,7 +24,9 @@
  * to language files.
  */
 
-Blockly.C = Blockly.Generator.get('C');
+ goog.provide('Blockly.ARDUINO.procedures');
+ goog.require('Blockly.ARDUINO');
+ Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
 Blockly.ARDUINO.procedures_defreturn = function() {
   // Define a procedure with a return value.

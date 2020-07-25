@@ -2,7 +2,9 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
+ * and 2014 Massachusetts Institute of Technology
+ * http://zerorobotics.org/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +20,26 @@
  */
 
 /**
- * @fileoverview Helper functions for generating C for blocks.
- * @author fraser@google.com (Neil Fraser)
- * Due to the frequency of long strings, the 80-column wrap rule need not apply
- * to language files.
+ * @fileoverview Helper functions for generating C++ for blocks. Modified from the standard Blockly ARDUINO generator.
+ * @author fraser@google.com (Neil Fraser), dininno@mit.edu (Ethan DiNinno)
  */
- goog.provide('Blockly.ARDUINO');
 
- goog.require('Blockly.Generator');
- goog.require('Blockly.utils.global');
- goog.require('Blockly.utils.string');
+goog.provide('Blockly.ARDUINO');
+goog.require('Blockly.Generator');
+
 
 Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
-Blockly.ARDUINO.stackSize = 80;
+//List of accepted variable types for dropdowns
+Blockly.ARDUINO.C_VARIABLE_TYPES =
+  [['float', 'float'],
+   ['int', 'int'],
+   ['unsigned int', 'unsigned int'],
+   ['short', 'short'],
+   ['unsigned short', 'unsigned short'],
+   ['bool', 'bool']];
+
+Blockly.ARDUINO.C_GLOBAL_VARS = [];
 
 /**
  * List of illegal variable names.
@@ -40,39 +48,81 @@ Blockly.ARDUINO.stackSize = 80;
  * accidentally clobbering a built-in object or function.
  * @private
  */
-Blockly.ARDUINO.RESERVED_WORDS_ =
-    'auto,const,double,float,int,short,struct,unsigned,break,continue,else,for,long,signed,switch,void,case,default,enum,goto,register,sizeof,typedef,volatile,char,do,extern,if,return,static,union,while,asm,dynamic_cast,namespace,reinterpret_cast,try,bool,explicit,new,static_cast,typeid,catch,false,operator,template,typename,class,friend,private,this,using,const_cast,inline,public,throw,virtual,delete,mutable,protected,true,wchar_t';
+Blockly.ARDUINO.addReservedWords(
+  ',alignas,alignof,and,and_eq,asm,auto,bitand,bitor,bool,break,case,catch,char,char16_t,char32_t,class,compl,const,constexpr,const_cast,continue,decltype,default,delete,do,double,dynamic_cast,else,enum,explicit,export,extern,false,float,for,friend,goto,if,inline,int,long,long double,long long,mutable,namespace,new,noexcept,not,not_eq,nullptr,operator,or,or_eq,private,protected,public,register,reinterpret_cast,return,short,signed,sizeof,static,static_assert,static_cast,struct,switch,template,this,thread_local,throw,true,try,typedef,typeid,typename,union,unsigned,using,virtual,void,volatile,wchar_t,while,xor,xor_eq,posix,'
+  // http://en.cppreference.com/w/cpp/keyword
+  + 'game,api,PI,PI2,PI3,PI4,DEG2RAD,RAD2DEG,ZRMS,ZR2D,ZR3D,ALLIANCE'
+);
 
 /**
- * Initialise the database of variable names.
+ * Order of operation ENUMs.
+ * http://en.cppreference.com/w/cpp/language/operator_precedence
+ */
+Blockly.ARDUINO.ORDER_ATOMIC = 0;         // 0 "" ...
+Blockly.ARDUINO.ORDER_MEMBER = 2;         // . []
+Blockly.ARDUINO.ORDER_FUNCTION_CALL = 2;  // ()
+Blockly.ARDUINO.ORDER_INCREMENT = 3;      // ++
+Blockly.ARDUINO.ORDER_DECREMENT = 3;      // --
+Blockly.ARDUINO.ORDER_LOGICAL_NOT = 3;    // !
+Blockly.ARDUINO.ORDER_BITWISE_NOT = 3;    // ~
+Blockly.ARDUINO.ORDER_UNARY_PLUS = 3;     // +
+Blockly.ARDUINO.ORDER_UNARY_NEGATION = 3; // -
+Blockly.ARDUINO.ORDER_MULTIPLICATION = 5; // *
+Blockly.ARDUINO.ORDER_DIVISION = 5;       // /
+Blockly.ARDUINO.ORDER_MODULUS = 5;        // %
+Blockly.ARDUINO.ORDER_ADDITION = 6;       // +
+Blockly.ARDUINO.ORDER_SUBTRACTION = 6;    // -
+Blockly.ARDUINO.ORDER_BITWISE_SHIFT = 7;  // << >>
+Blockly.ARDUINO.ORDER_RELATIONAL = 8;     // < <= > >=
+Blockly.ARDUINO.ORDER_EQUALITY = 9;       // == !=
+Blockly.ARDUINO.ORDER_BITWISE_AND = 10;   // &
+Blockly.ARDUINO.ORDER_BITWISE_XOR = 11;   // ^
+Blockly.ARDUINO.ORDER_BITWISE_OR = 12;    // |
+Blockly.ARDUINO.ORDER_LOGICAL_AND = 13;   // &&
+Blockly.ARDUINO.ORDER_LOGICAL_OR = 14;    // ||
+Blockly.ARDUINO.ORDER_CONDITIONAL = 15;   // ?:
+Blockly.ARDUINO.ORDER_ASSIGNMENT = 15;    // = += -= *= /= %= <<= >>= ...
+Blockly.ARDUINO.ORDER_COMMA = 17;         // ,
+Blockly.ARDUINO.ORDER_NONE = 99;          // (...)
+
+/**
+ * Arbitrary code to inject into locations that risk causing infinite loops.
+ * Any instances of '%1' will be replaced by the block ID that failed.
+ * E.g. '  checkTimeout(%1);\n'
+ * @type ?string
+ */
+Blockly.ARDUINO.INFINITE_LOOP_TRAP = null;
+
+/**
+ * Initialize the database of variable names.
  */
 Blockly.ARDUINO.init = function() {
   // Create a dictionary of definitions to be printed before the code.
-  Blockly.ARDUINO.definitions_ = {};
+    Blockly.ARDUINO.definitions_ = Object.create(null);
+
+    Blockly.ARDUINO.times_ = Object.create(null);
+  // Create a dictionary mapping desired function names in definitions_
+  // to actual function names (to avoid collisions with user functions).
+  Blockly.ARDUINO.functionNames_ = Object.create(null);
 
   if (Blockly.Variables) {
     if (!Blockly.ARDUINO.variableDB_) {
       Blockly.ARDUINO.variableDB_ =
-          new Blockly.Names(Blockly.ARDUINO.RESERVED_WORDS_.split(','));
+          new Blockly.Names(Blockly.ARDUINO.RESERVED_WORDS_);
     } else {
       Blockly.ARDUINO.variableDB_.reset();
     }
 
     var defvars = [];
     var variables = Blockly.Variables.allVariables();
+    var structures = Blockly.Structure.allStructure();
     for (var x = 0; x < variables.length; x++) {
-      var type = 'int';
-      var matches = variables[x].match(/^_([^_]+)/);
-      if(matches)
-        type = matches[1];
-
-      defvars[x] = type + ' ' +
-          Blockly.ARDUINO.variableDB_.getDistinctName(variables[x],
+      if(variables[x][3] == 'global')
+      defvars[x] = variables[x][0] + variables[x][1] + ' ' +
+          Blockly.ARDUINO.variableDB_.getName(variables[x][2],
           Blockly.Variables.NAME_TYPE) + ';';
     }
     Blockly.ARDUINO.definitions_['variables'] = defvars.join('\n');
-
-    Blockly.ARDUINO.threads = [];
   }
 };
 
@@ -82,50 +132,57 @@ Blockly.ARDUINO.init = function() {
  * @return {string} Completed code.
  */
 Blockly.ARDUINO.finish = function(code) {
-  // ARDUINOonvert the definitions dictionary into a list.
+  // Indent every line.
+  if (code) {
+    code = this.prefixLines(code, Blockly.ARDUINO.INDENT);
+  }
+  code = '\n' + code;
+
+    // Convert the definitions dictionary into a list.
+    var includes = [];
+    var declarations = [];
+    var defines = [];
+    var func_definitions = [];
+    for (var name in Blockly.ARDUINO.definitions_) {
+        var def = Blockly.ARDUINO.definitions_[name];
+        var nameInclude = 'include';
+        var nameFunc_declare = 'Func_declare';
+        var nameDefine = 'define';
+        if (name.match(nameInclude)) {
+            includes.push(def);
+        }
+        else if(name.match(nameFunc_declare)){
+            declarations.push(def);//declaration
+        }
+        else if(name.match(nameDefine)){
+            defines.push(def);//#define
+        }
+        else {
+            func_definitions.push(def);//definition
+        }
+    }
+    //imports--> #include
+    //definitions--> function def, #def
+    var allDefs = includes.join('\n') + '\n\n' + declarations.join('\n') + '\n\n' + defines.join('\n');
+    var allFuncs = func_definitions.join('\n');
+
+  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n') + code + allFuncs.replace(/\n\n+/g, '\n\n');
+};
+
+Blockly.ARDUINO.finishFull = function(code) {
+  // Convert the definitions dictionary into a list.
   var definitions = [];
   for (var name in Blockly.ARDUINO.definitions_) {
     definitions.push(Blockly.ARDUINO.definitions_[name]);
   }
-
-  var ret = '';
-  var ps = Blockly.Procedures.allProcedures();
-  ps[0].forEach(function(funcName){
-    ret += 'void ' + funcName + '();\n';
-  });
-  ps[1].forEach(function(funcName){
-    var type = 'int';
-    var matches = funcName.match(/^_([^_]+)/);
-    if(matches)
-      type = matches[1];
-    ret += type + ' ' + funcName + '();\n';
-  });
-  ret += '\n\n';
-
-  ret += definitions.join('\n') + '\n\n';
-  ret +=  code + '\n\n';
-
-
-
-  ret += 'void init(){\n';
-
-  for(x in Blockly.mainWorkspace.wiring){
-    var type = Blockly.mainWorkspace.wiring[x].type;
-    if(type  == 'servo' || type == 'led' || type == 'output')
-      ret += 'pinMode(' + x + ', OUTPUT);\n';
-    else
-      ret += 'pinMode(' + x + ', INPUT);\n';
+  code = definitions.join('\n\n') + '\n\n' +
+  'void setPos(float x, float y, float z) {\n\tfloat pos[3];\n\tpos[0] = x; pos[1] = y; pos[2] = z;\n\tapi.setPositionTarget(pos);\n}'
+  + '\n\n' + code;
+  //HACK: Make sure the code contains an init function in case the init page has not been properly initialized
+  if(code.indexOf('//Begin page init\nvoid init() {\n') === -1) {
+    code = 'void init() {}\n' + code;
   }
-
-  for(var i=1; i<Blockly.ARDUINO.threads.length; i++){
-    var t = Blockly.ARDUINO.threads[i];
-    ret += ' avr_thread_start(&' + t + '_context, ' + t + ', ' + t + '_stack, sizeof(' + t + '_stack));\n';
-  }
-  ret += '}\n';
-  if(!Blockly.ARDUINO.threads.length)
-    ret += 'void thread_0(){for(;;);}';
-
-  return ret;
+  return code;
 };
 
 /**
@@ -135,31 +192,36 @@ Blockly.ARDUINO.finish = function(code) {
  * @return {string} Legal line of code.
  */
 Blockly.ARDUINO.scrubNakedValue = function(line) {
-  return line + ';\n';
+    return line + ';\n';
+  //ZR editor should ignore all blocks that are not children of the page's function block
+ // return '';
 };
 
 /**
- * Encode a string as a properly escaped C string, complete with
+ * Encode a string as a properly escaped ARDUINO string, complete with
  * quotes.
  * @param {string} string Text to encode.
- * @return {string} C string.
+ * @return {string} ARDUINO string.
  * @private
  */
 Blockly.ARDUINO.quote_ = function(string) {
-  // TODO: This is a quick hack.  Replace with goog.string.quote
-  string = string.replace(/\\/g, '\\\\')
-                 .replace(/\n/g, '\\\n')
-                 .replace(/'/g, '\\\'');
-  return '\'' + string + '\'';
+
+    string = string.replace(/\\/g, '\\\\')
+                    .replace(/'/g, '\\\'')
+                    .replace(/"/g, '\\\"')
+                    .replace(/\?/g, '\\?');
+    string = string.replace(/\\\\n/g, '\\n');
+  return string; //Do not add quotes so printf formatting can be used
 };
 
 /**
- * Common tasks for generating C from blocks.
+ * Common tasks for generating ARDUINO from blocks.
  * Handles comments for the specified block and any connected value blocks.
  * Calls any statements following this block.
  * @param {!Blockly.Block} block The current block.
- * @param {string} code The C code created for this block.
- * @return {string} C code with comments and subsequent blocks added.
+ * @param {string} code The ARDUINO code created for this block.
+ * @return {string} ARDUINO code with comments and subsequent blocks added.
+ * @this {Blockly.CodeGenerator}
  * @private
  */
 Blockly.ARDUINO.scrub_ = function(block, code) {
@@ -173,17 +235,17 @@ Blockly.ARDUINO.scrub_ = function(block, code) {
     // Collect comment for this block.
     var comment = block.getCommentText();
     if (comment) {
-      commentCode += Blockly.Generator.prefixLines(comment, '// ') + '\n';
+      commentCode += this.prefixLines(comment, '// ') + '\n';
     }
     // Collect comments for all value arguments.
     // Don't collect comments for nested statements.
     for (var x = 0; x < block.inputList.length; x++) {
       if (block.inputList[x].type == Blockly.INPUT_VALUE) {
-        var childBlock = block.inputList[x].targetBlock();
+        var childBlock = block.inputList[x].connection.targetBlock();
         if (childBlock) {
-          var comment = Blockly.Generator.allNestedComments(childBlock);
+          var comment = this.allNestedComments(childBlock);
           if (comment) {
-            commentCode += Blockly.Generator.prefixLines(comment, '// ');
+            commentCode += this.prefixLines(comment, '// ');
           }
         }
       }
@@ -192,21 +254,4 @@ Blockly.ARDUINO.scrub_ = function(block, code) {
   var nextBlock = block.nextConnection && block.nextConnection.targetBlock();
   var nextCode = this.blockToCode(nextBlock);
   return commentCode + code + nextCode;
-};
-
-
-
-Blockly.ARDUINO.topBlockInit = function() {
-  var thread = 'thread_' + Blockly.ARDUINO.threads.length;
-  Blockly.ARDUINO.threads.push(thread);
-
-  if(Blockly.ARDUINO.threads.length-1)
-    return 'uint8_t ' + thread + '_stack[80];\navr_thread_context ' + thread + '_context;\nvoid ' + thread + '(){';
-  else
-    return 'void ' + thread + '(){';
-};
-
-Blockly.ARDUINO.topBlockFinish = function() {
-
-  return ' for(;;)avr_thread_sleep(1000);\n}\n\n';
 };

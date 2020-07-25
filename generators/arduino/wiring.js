@@ -24,7 +24,9 @@
  * to language files.
  */
 
-Blockly.C = Blockly.Generator.get('C');
+ goog.provide('Blockly.ARDUINO.wiring');
+ goog.require('Blockly.ARDUINO');
+ Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
 
 Blockly.ARDUINO.led = function() {

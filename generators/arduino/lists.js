@@ -24,7 +24,9 @@
  * to language files.
  */
 
-Blockly.C = Blockly.Generator.get('C');
+ goog.provide('Blockly.ARDUINO.lists');
+ goog.require('Blockly.ARDUINO');
+ Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
 Blockly.ARDUINO.lists_create_empty = function() {
   // Create an empty list.

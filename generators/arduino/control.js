@@ -23,7 +23,8 @@
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
-
+ goog.provide('Blockly.ARDUINO.control');
+ goog.require('Blockly.ARDUINO');
 Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
 Blockly.ARDUINO.controls_if = function() {

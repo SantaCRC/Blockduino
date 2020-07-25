@@ -24,7 +24,9 @@
  * to language files.
  */
 
-Blockly.C = Blockly.Generator.get('C');
+ goog.provide('Blockly.ARDUINO.text');
+ goog.require('Blockly.ARDUINO');
+ Blockly.ARDUINO = new Blockly.Generator('ARDUINO');
 
 Blockly.ARDUINO.text = function() {
   // Text value.
