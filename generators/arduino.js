@@ -163,16 +163,29 @@ Blockly.ARDUINO.init = function(workspace) {
  * @return {string} Completed code.
  */
 Blockly.ARDUINO.finish = function(code) {
+  // Indent every line.
+  if (code) {
+    code = Blockly.ARDUINO.prefixLines(code, Blockly.ARDUINO.INDENT);
+  }
+  code = 'void loop() {\n' + code + '}';
+
   // Convert the definitions dictionary into a list.
+  var imports = [];
   var definitions = [];
   for (var name in Blockly.ARDUINO.definitions_) {
-    definitions.push(Blockly.ARDUINO.definitions_[name]);
+    var def = Blockly.ARDUINO.definitions_[name];
+    if (def.match(/^import\s/)) {
+      imports.push(def);
+    } else {
+      definitions.push(def);
+    }
   }
   // Clean up temporary data.
   delete Blockly.ARDUINO.definitions_;
   delete Blockly.ARDUINO.functionNames_;
   Blockly.ARDUINO.variableDB_.reset();
-  return definitions.join('\n\n') + '\n\n\n' + code;
+  var allDefs = imports.join('\n') + '\n\n' + definitions.join('\n\n');
+  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n\n\n') + code;
 };
 
 /**
