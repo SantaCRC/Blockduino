@@ -50,8 +50,6 @@ Ardublockly.bindDesignEventListeners = function() {
   window.addEventListener(
       'resize', Ardublockly.resizeBlocklyWorkspace, false);
   // Display/hide the XML load button when the XML collapsible header is clicked
-  document.getElementById('xml_collapsible_header').addEventListener(
-      'click', Ardublockly.buttonLoadXmlCodeDisplay);
   // Toggle the content height on click to the IDE output collapsible header
   document.getElementById('ide_output_collapsible_header').addEventListener(
       'click', function() {
@@ -70,17 +68,6 @@ Ardublockly.bindDesignEventListeners = function() {
  * Displays or hides the 'load textarea xml' button based on the state of the
  * collapsible 'xml_collapsible_body'.
  */
-Ardublockly.buttonLoadXmlCodeDisplay = function() {
-  var xmlCollapsibleBody = document.getElementById('xml_collapsible_body');
-  // Waiting 400 ms to check status due to the animation delay (300 ms)
-  setTimeout(function() {
-    if (xmlCollapsibleBody.style.display == 'none') {
-      $('#button_load_xml').hide();
-    } else {
-      $('#button_load_xml').fadeIn('slow');
-    }
-  }, 400);
-};
 
 /**
  * Changes the IDE launch buttons based on the option indicated in the argument.
@@ -88,7 +75,6 @@ Ardublockly.buttonLoadXmlCodeDisplay = function() {
  *     in the settings modal: 'upload', 'verify', or 'open'.
  */
 Ardublockly.changeIdeButtonsDesign = function(value) {
-  var buttonLeft = document.getElementById('button_ide_left');
   var iconLeft = document.getElementById('button_ide_left_icon');
   var buttonMiddle = document.getElementById('button_ide_middle');
   var iconMiddle = document.getElementById('button_ide_middle_icon');
@@ -96,9 +82,6 @@ Ardublockly.changeIdeButtonsDesign = function(value) {
   var iconLarge = document.getElementById('button_ide_large_icon');
 
   if (value === 'upload') {
-    buttonLeft.className =
-        buttonLeft.className.replace(/arduino_\S+/, 'arduino_yellow');
-    iconLeft.className = 'mdi-action-open-in-browser';
     buttonMiddle.className =
         buttonMiddle.className.replace(/arduino_\S+/, 'arduino_teal');
     iconMiddle.className = 'mdi-navigation-check';
@@ -106,25 +89,12 @@ Ardublockly.changeIdeButtonsDesign = function(value) {
         buttonLarge.className.replace(/arduino_\S+/, 'arduino_orange');
     iconLarge.className = 'mdi-av-play-arrow';
   } else if (value === 'verify') {
-    buttonLeft.className =
-        buttonLeft.className.replace(/arduino_\S+/, 'arduino_yellow');
-    iconLeft.className = 'mdi-action-open-in-browser';
     buttonMiddle.className =
         buttonMiddle.className.replace(/arduino_\S+/, 'arduino_orange');
     iconMiddle.className = 'mdi-av-play-arrow';
     buttonLarge.className =
         buttonLarge.className.replace(/arduino_\S+/, 'arduino_teal');
     iconLarge.className = 'mdi-navigation-check';
-  } else if (value === 'open') {
-    buttonLeft.className =
-        buttonLeft.className.replace(/arduino_\S+/, 'arduino_teal');
-    iconLeft.className = 'mdi-navigation-check';
-    buttonMiddle.className =
-        buttonMiddle.className.replace(/arduino_\S+/, 'arduino_orange');
-    iconMiddle.className = 'mdi-av-play-arrow';
-    buttonLarge.className =
-        buttonLarge.className.replace(/arduino_\S+/, 'arduino_yellow');
-    iconLarge.className = 'mdi-action-open-in-browser';
   }
 };
 
@@ -134,7 +104,6 @@ Ardublockly.changeIdeButtonsDesign = function(value) {
  * @param {!boolean} show Indicates if the extra buttons are to be shown.
  */
 Ardublockly.showExtraIdeButtons = function(show) {
-  var IdeButtonLeft = document.getElementById('button_ide_left');
   var IdeButtonMiddle = document.getElementById('button_ide_middle');
   if (show) {
     // prevent previously set time-out to hide buttons while trying to show them
@@ -142,17 +111,11 @@ Ardublockly.showExtraIdeButtons = function(show) {
     clearTimeout(Ardublockly.hidetimeoutHandle);
     IdeButtonMiddle.style.visibility = 'visible';
     IdeButtonMiddle.style.opacity = '1';
-    Ardublockly.showtimeoutHandle = setTimeout(function() {
-      IdeButtonLeft.style.visibility = 'visible';
-      IdeButtonLeft.style.opacity = '1';
-    }, 50);
   } else {
     // As the mouse out can be accidental, only hide them after a delay
     Ardublockly.outHoldtimeoutHandle = setTimeout(function() {
       // Prevent show time-out to affect the hiding of the buttons
       clearTimeout(Ardublockly.showtimeoutHandle);
-      IdeButtonLeft.style.visibility = 'hidden';
-      IdeButtonLeft.style.opacity = '0';
       Ardublockly.hidetimeoutHandle = setTimeout(function() {
         IdeButtonMiddle.style.visibility = 'hidden';
         IdeButtonMiddle.style.opacity = '0';
@@ -462,7 +425,6 @@ Ardublockly.contentHeightToggle = function() {
   var outputHeader = document.getElementById('ide_output_collapsible_header');
   var blocks = document.getElementById('blocks_panel');
   var arduino = document.getElementById('content_arduino');
-  var xml = document.getElementById('content_xml');
 
   // Blockly doesn't resize with CSS3 transitions enabled, so do it manually
   var timerId = setInterval(function() {

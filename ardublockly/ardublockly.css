@@ -150,29 +150,6 @@ ul.side-nav li.side-menu-end {
   height: calc(100vh - 190px);          /* Standard */
 }
 
-#content_xml {
-  resize: none;
-  outline: none;
-  border: none;
-  padding: 0px 5px;
-  font-family: monospace;
-  font-size: smaller;
-  overflow: scroll;
-  font-style: 0.2em !important;
-  min-height: 384px;
-}
-.content_xml_large {
-  height: -moz-calc(100vh - 286px);     /* Firefox  */
-  height: -webkit-calc(100vh - 286px);  /* WebKit   */
-  height: -o-calc(100vh - 286px);       /* Opera    */
-  height: calc(100vh - 286px);          /* Standard */
-}
-.content_xml_small {
-  height: -moz-calc(100vh - 446px);     /* Firefox  */
-  height: -webkit-calc(100vh - 446px);  /* WebKit   */
-  height: -o-calc(100vh - 446px);       /* Opera    */
-  height: calc(100vh - 446px);          /* Standard */
-}
 
 /* The materialize framework changes height of the div to show or hide */
 /* the collapsible elements. */
@@ -189,7 +166,7 @@ ul.side-nav li.side-menu-end {
   -webkit-user-select: text;
   -ms-user-select: text;
   user-select: text;
-  min-height: 388px;
+  min-height: 430px;
 }
 .content_arduino_large {
   height: -moz-calc(100vh - 280px);     /* Firefox  */
@@ -409,7 +386,7 @@ ul.side-nav li.side-menu-end {
   background: rgba(98, 174, 178, .2) !important;  /* Arduino Light Teal */
   -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); 
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   transition: background 0.3s linear, box-shadow 0.3s linear, border-width 0.3s linear;
   -ms-transition: background 0.3s linear, box-shadow 0.3s linear, border-width 0.3s linear;
   -moz-transition: background 0.3s linear, -moz-box-shadow 0.3s linear, border-width 0.3s linear;
@@ -435,7 +412,7 @@ ul.side-nav li.side-menu-end {
   right: 0px !important;
   top: 0px !important;
   width: 55px !important;
-  height: 55px !important; 
+  height: 55px !important;
   z-index: 5;
 }
 .spinner-orange {

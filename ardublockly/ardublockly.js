@@ -86,11 +86,8 @@ Ardublockly.bindActionFunctions = function() {
   Ardublockly.bindClick_('button_ide_middle', function() {
       Ardublockly.ideButtonMiddleAction();
   });
-  Ardublockly.bindClick_('button_ide_left', function() {
-    Ardublockly.ideButtonLeftAction();
-  });
-  Ardublockly.bindClick_('button_load_xml', Ardublockly.XmlTextareaToBlocks);
   Ardublockly.bindClick_('button_toggle_toolbox', Ardublockly.toogleToolbox);
+  Ardublockly.bindClick_('button_load_xml', Ardublockly.XmlTextareaToBlocks);
 
   // Settings modal input field listeners only if they can be edited
   var settingsPathInputListeners = function(elId, setValFunc, setHtmlCallback) {
@@ -115,9 +112,6 @@ Ardublockly.bindActionFunctions = function() {
       };
     }
   };
-  settingsPathInputListeners('settings_compiler_location',
-                             ArdublocklyServer.setCompilerLocation,
-                             Ardublockly.setCompilerLocationHtml);
   settingsPathInputListeners('settings_sketch_location',
                              ArdublocklyServer.setSketchLocationHtml,
                              Ardublockly.setSketchLocationHtml);
@@ -170,8 +164,6 @@ Ardublockly.ideButtonLeftAction = Ardublockly.ideSendOpen;
 
 /** Initialises the IDE buttons with the default option from the server. */
 Ardublockly.initialiseIdeButtons = function() {
-  document.getElementById('button_ide_left').title =
-      Ardublockly.getLocalStr('openSketch');
   document.getElementById('button_ide_middle').title =
       Ardublockly.getLocalStr('verifySketch');
   document.getElementById('button_ide_large').title =
@@ -208,7 +200,6 @@ Ardublockly.changeIdeButtons = function(value) {
     Ardublockly.ideButtonLeftAction = Ardublockly.ideSendOpen;
     Ardublockly.ideButtonMiddleAction = Ardublockly.ideSendUpload;
     Ardublockly.ideButtonLargeAction = Ardublockly.ideSendVerify;
-    leftButton.title = openTitle;
     middleButton.title = uploadTitle;
     largeButton.title = verifyTitle;
   } else if (value === 'open') {
@@ -580,7 +571,7 @@ Ardublockly.renderContent = function() {
   }
 
   // Generate plain XML into element
-  document.getElementById('content_xml').value = Ardublockly.generateXml();
+
 };
 
 /**

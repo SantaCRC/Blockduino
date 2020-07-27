@@ -70,8 +70,7 @@ class ServerCompilerSettings(object):
     __serial_ports = {'port0': 'COM1'}
 
     # Class dictionary to define IDE load options, static content
-    __ide_load_options = {'open': 'Open sketch in IDE',
-                          'verify': 'Verify sketch',
+    __ide_load_options = {'verify': 'Verify sketch',
                           'upload': 'Compile and Upload sketch'}
 
     #
@@ -559,7 +558,7 @@ class ServerCompilerSettings(object):
         """
         settings_dict = self.get_settings_file_data()
         if settings_dict:
-            self.set_compiler_dir_from_file(settings_dict['arduino_exec_path'])
+            self.set_compiler_dir_from_file('arduino-cli.exe')
             self.set_arduino_board_from_file(settings_dict['arduino_board'])
             self.set_serial_port_from_file(
                     settings_dict['arduino_serial_port'])
