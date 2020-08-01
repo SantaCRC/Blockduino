@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 #
-# Builds the GitHub Wiki documentation into a static HTML site saved into the 
+# Builds the GitHub Wiki documentation into a static HTML site saved into the
 # project root directory.
 #
 # Copyright (c) 2016 carlosperate https://github.com/carlosperate/
@@ -43,7 +43,7 @@ except ImportError:
 
 # Path data
 GITHUB_USER = "carlosperate"
-WIKI_NAME = "ardublockly.wiki"
+WIKI_NAME = "ardublockly\wiki"
 GITHUB_WIKI_REPO = "github.com/%s/%s.git" % (GITHUB_USER, WIKI_NAME)
 
 MKDOCS_FOLDER = "ardublocklydocs"

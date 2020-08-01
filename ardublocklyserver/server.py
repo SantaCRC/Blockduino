@@ -15,6 +15,13 @@ from bottle import static_file, run, default_app, redirect, abort
 from six import iteritems
 # This package modules
 from ardublocklyserver import actions
+from tkinter import *
+from tkinter import ttk
+
+
+# import only asksaveasfile from filedialog
+# which is used to save file in any extension
+from tkinter.filedialog import asksaveasfile
 
 
 #
@@ -22,6 +29,24 @@ from ardublocklyserver import actions
 #
 app = application = default_app()
 document_root = ''
+
+def dsave(file,name):
+    window = Tk()
+    screenWi = window.winfo_screenwidth()
+    screenHe = window.winfo_screenheight()
+    total='0x0+'+str(screenWi)+"+"+str(screenHe)
+    window.geometry(total)
+    window.attributes("-topmost", True)
+    files = [('Blockduino Sketch', '*.bds*'),
+             ('All files', '*.')]
+    filea = asksaveasfile(initialfile = name, filetypes = files, defaultextension = '.bds')
+    try:
+        filea.write(file)
+        filea.close()
+    except:
+        pass
+    window.destroy()
+
 
 
 def launch_server(ip='localhost', port=8000, document_root_=''):
@@ -420,3 +445,10 @@ def handler_code_post():
         })
     set_header_no_cache()
     return response_dict
+
+@app.post('/save')
+def save():
+    file = request.json["code"]
+    name = request.json['name']
+    print(str(file))
+    dsave(file,name)

@@ -83,10 +83,10 @@ Ardublockly.changeIdeButtonsDesign = function(value) {
 
   if (value === 'upload') {
     buttonMiddle.className =
-        buttonMiddle.className.replace(/arduino_\S+/, 'arduino_teal');
+        buttonMiddle.className.replace(/arduino_\S+/, 'arduino_orange');
     iconMiddle.className = 'mdi-navigation-check';
     buttonLarge.className =
-        buttonLarge.className.replace(/arduino_\S+/, 'arduino_orange');
+        buttonLarge.className.replace(/arduino_\S+/, 'arduino_teal');
     iconLarge.className = 'mdi-av-play-arrow';
   } else if (value === 'verify') {
     buttonMiddle.className =
@@ -128,18 +128,18 @@ Ardublockly.showExtraIdeButtons = function(show) {
  * Shows or hides the spinner around the large IDE button.
  * @param {!boolean} active True turns ON the spinner, false OFF.
  */
-Ardublockly.largeIdeButtonSpinner = function(active) {
-  var spinner = document.getElementById('button_ide_large_spinner');
-  var buttonIdeLarge = document.getElementById('button_ide_large');
-  var buttonClass = buttonIdeLarge.className;
-  if (active) {
-    spinner.style.display = 'block';
-    buttonIdeLarge.className = buttonIdeLarge.className + ' grey';
-  } else {
-    spinner.style.display = 'none';
-    buttonIdeLarge.className = buttonClass.replace(' grey', '');
- }
-};
+ Ardublockly.largeIdeButtonSpinner = function(active) {
+   var spinner = document.getElementById('button_ide_large_spinner');
+   var buttonIdeLarge = document.getElementById('button_ide_large');
+   var buttonClass = buttonIdeLarge.className;
+   if (active) {
+     spinner.style.display = 'block';
+     buttonIdeLarge.className = buttonIdeLarge.className + ' grey';
+   } else {
+     spinner.style.display = 'none';
+     buttonIdeLarge.className = buttonClass.replace(' grey', '');
+  }
+ };
 
 /**
  * Sets the toolbox HTML element to be display or not and change the visibility
@@ -444,14 +444,12 @@ Ardublockly.contentHeightToggle = function() {
   } else {
     blocks.className = 'content height_transition blocks_panel_large';
     arduino.className = 'content height_transition content_arduino_large';
-    xml.className = 'content height_transition content_xml_large';
   }
 
   // If the height transition CSS is left then blockly does not resize
   setTimeout(function() {
     blocks.className = blocks.className.replace('height_transition', '');
     arduino.className = arduino.className.replace('height_transition', '');
-    xml.className = xml.className.replace('height_transition', '');
   }, 400);
 };
 

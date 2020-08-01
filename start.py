@@ -15,6 +15,9 @@ import getopt
 import platform
 import threading
 import webbrowser
+import webview
+from tkinter import *
+from tkinter import ttk
 
 import ardublocklyserver.server
 import ardublocklyserver.compilersettings
@@ -32,11 +35,12 @@ def open_browser(ip, port, file_path=''):
     :param file_path: Path within domain for the browser to open.
     :return: None.
     """
-    def _open_browser():
-        webbrowser.get().open('http://%s:%s/%s' % (ip, port, file_path))
+    # def _open_browser():
+        #webbrowser.get().open('http://%s:%s/%s' % (ip, port, file_path))
 
-    thread = threading.Timer(0.5, _open_browser)
-    thread.start()
+
+    # thread = threading.Timer(0.5, _open_browser)
+    # thread.start()
 
 
 def find_ardublockly_dir(search_path):
@@ -181,4 +185,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    thread = threading.Timer(0.5, main)
+    thread.start()
+    window = webview.create_window("Blockduino Alpha V1.0", 'http://localhost:8000/ardublockly/index.html?lang=es')
+    webview.start(http_server=True)
+    mainloop()

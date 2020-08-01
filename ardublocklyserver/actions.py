@@ -19,7 +19,7 @@ from ardublocklyserver import sketchcreator
 
 #
 # Sketch loading to Arduino functions
-#
+code_str=""
 def arduino_ide_send_code(code_str):
     """Create a sketch from a code string and sends it to the Arduino IDE.
 
@@ -95,12 +95,32 @@ def load_arduino_cli(sketch_path):
         # Concatenates the CLI command and execute if the flags are valid
         cli_command = [settings.compiler_dir]
         if settings.load_ide_option == 'upload':
-            print('\nUploading sketch to Arduino...')
-            cli_command.append('--upload')
-            cli_command.append('--port')
-            cli_command.append(settings.get_serial_port_flag())
-            cli_command.append('--board')
+            print('\nVerifying the sketch...')
+            cli_command.append('compile')
+            cli_command.append('--fqbn')
             cli_command.append(settings.get_arduino_board_flag())
+            cli_command.append(sketch_path)
+
+            process = subprocess.Popen(
+                cli_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                shell=False)
+            std_out, err_out = process.communicate()
+            std_out = six.u(std_out)
+            err_out = six.u(err_out)
+            exit_code = process.returncode
+            print('Arduino output:\n%s' % std_out)
+            print('Arduino Error output:\n%s' % err_out)
+            print('Arduino Exit code: %s' % exit_code)
+            cli_command = [settings.compiler_dir]
+
+            print('\nUploading sketch to Arduino...')
+            cli_command.append('upload')
+            cli_command.append('-p')
+            cli_command.append(settings.get_serial_port_flag())
+            cli_command.append('--fqbn')
+            cli_command.append(settings.get_arduino_board_flag())
+            cli_command.append(sketch_path)
+
         elif settings.load_ide_option == 'verify':
             print('\nVerifying the sketch...')
             cli_command.append('compile')
@@ -134,6 +154,23 @@ def load_arduino_cli(sketch_path):
             # For some reason Arduino CLI can return 256 on success
             if (process.returncode != 0) and (process.returncode != 256):
                 success = False
+                if exit_code==1:
+                    cli_command = [settings.compiler_dir]
+                    cli_command.append('core')
+                    cli_command.append('install')
+                    cli_command.append('arduino:avr')
+
+                    process = subprocess.Popen(
+                        cli_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        shell=False)
+                    std_out, err_out = process.communicate()
+                    std_out = six.u(std_out)
+                    err_out = six.u(err_out)
+                    exit_code = process.returncode
+                    print('Arduino output:\n%s' % std_out)
+                    print('Arduino Error output:\n%s' % err_out)
+                    print('Arduino Exit code: %s' % exit_code)
+                    cli_command = [settings.compiler_dir]
                 if exit_code >= 50:
                     # Custom exit codes from server start at 50
                     err_out = '%s\nUnexpected Arduino exit error code: %s' % \

@@ -183,7 +183,6 @@ Ardublockly.initialiseIdeButtons = function() {
 Ardublockly.changeIdeButtons = function(value) {
   var largeButton = document.getElementById('button_ide_large');
   var middleButton = document.getElementById('button_ide_middle');
-  var leftButton = document.getElementById('button_ide_left');
   var openTitle = Ardublockly.getLocalStr('openSketch');
   var verifyTitle = Ardublockly.getLocalStr('verifySketch');
   var uploadTitle = Ardublockly.getLocalStr('uploadSketch');
@@ -192,7 +191,6 @@ Ardublockly.changeIdeButtons = function(value) {
     Ardublockly.ideButtonLeftAction = Ardublockly.ideSendOpen;
     Ardublockly.ideButtonMiddleAction = Ardublockly.ideSendVerify;
     Ardublockly.ideButtonLargeAction = Ardublockly.ideSendUpload;
-    leftButton.title = openTitle;
     middleButton.title = verifyTitle;
     largeButton.title = uploadTitle;
   } else if (value === 'verify') {
@@ -207,7 +205,6 @@ Ardublockly.changeIdeButtons = function(value) {
     Ardublockly.ideButtonLeftAction = Ardublockly.ideSendVerify;
     Ardublockly.ideButtonMiddleAction = Ardublockly.ideSendUpload;
     Ardublockly.ideButtonLargeAction = Ardublockly.ideSendOpen;
-    leftButton.title = verifyTitle;
     middleButton.title = uploadTitle;
     largeButton.title = openTitle;
   }
@@ -302,7 +299,7 @@ Ardublockly.loadUserXmlFile = function() {
  */
 Ardublockly.saveXmlFile = function() {
   Ardublockly.saveTextFileAs(
-      document.getElementById('sketch_name').value + '.xml',
+      document.getElementById('sketch_name').value + '.bds',
       Ardublockly.generateXml());
 };
 
@@ -324,8 +321,9 @@ Ardublockly.saveSketchFile = function() {
  * @param {!string} content Text datd to be saved in to the file.
  */
 Ardublockly.saveTextFileAs = function(fileName, content) {
-  var blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
-  saveAs(blob, fileName);
+  // var blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
+  // saveAs(blob, fileName);
+  ArdublocklyServer.sendRequest('/save', 'POST', 'application/json', {"code": content,"name":fileName});
 };
 
 /**
