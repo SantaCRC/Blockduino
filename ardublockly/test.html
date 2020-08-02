@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <body>
+    <div>
+      <h1>Consola fea</h1>
+      <textarea id="story" name="story" rows="20" cols="150"></textarea>
+    </div>
+  </body>
+     <script type="text/javascript">
+       var ws = new WebSocket("ws://localhost:8080/websocket");
+       ws.onopen = function() {
+           ws.send("Hello, world");
+       };
+       ws.onmessage = function (evt) {
+           //document.write(evt.data);
+           var obj=document.getElementById('story')
+           obj.value+=evt.data
+           obj.scrollTop = obj.scrollHeight;
+       };
+     </script>
+</head>
+</html>

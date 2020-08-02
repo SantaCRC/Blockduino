@@ -16,8 +16,6 @@ import platform
 import threading
 import webbrowser
 import webview
-from tkinter import *
-from tkinter import ttk
 
 import ardublocklyserver.server
 import ardublocklyserver.compilersettings
@@ -188,5 +186,5 @@ if __name__ == '__main__':
     thread = threading.Timer(0.5, main)
     thread.start()
     window = webview.create_window("Blockduino Alpha V1.0", 'http://localhost:8000/ardublockly/index.html?lang=es')
+    ardublocklyserver.server.conf(window)
     webview.start(http_server=True)
-    mainloop()

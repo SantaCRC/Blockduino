@@ -40,6 +40,7 @@ Ardublockly.bindActionFunctions = function() {
   Ardublockly.bindClick_('button_load', Ardublockly.loadUserXmlFile);
   Ardublockly.bindClick_('button_save', Ardublockly.saveXmlFile);
   Ardublockly.bindClick_('button_delete', Ardublockly.discardAllBlocks);
+  Ardublockly.bindClick_('button_monitor', Ardublockly.openmonitor);
 
   // Side menu buttons, they also close the side menu
   Ardublockly.bindClick_('menu_load', function() {
@@ -330,6 +331,11 @@ Ardublockly.saveTextFileAs = function(fileName, content) {
  * Retrieves the Settings from ArdublocklyServer to populates the form data
  * and opens the Settings modal dialog.
  */
+
+Ardublockly.openmonitor = function (){
+  ArdublocklyServer.sendRequest('/serial', 'GET', 'application/json');
+};
+
 Ardublockly.openSettings = function() {
   ArdublocklyServer.requestCompilerLocation(function(jsonObj) {
     Ardublockly.setCompilerLocationHtml(

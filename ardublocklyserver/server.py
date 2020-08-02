@@ -13,15 +13,15 @@ from bottle import request, response
 from bottle import static_file, run, default_app, redirect, abort
 # Python 2 and 3 compatibility imports
 from six import iteritems
+import threading
+import time
 # This package modules
 from ardublocklyserver import actions
-from tkinter import *
-from tkinter import ttk
-
-
+import webview
+import serial
+import subprocess
 # import only asksaveasfile from filedialog
 # which is used to save file in any extension
-from tkinter.filedialog import asksaveasfile
 
 
 #
@@ -30,23 +30,20 @@ from tkinter.filedialog import asksaveasfile
 app = application = default_app()
 document_root = ''
 
-def dsave(file,name):
-    window = Tk()
-    screenWi = window.winfo_screenwidth()
-    screenHe = window.winfo_screenheight()
-    total='0x0+'+str(screenWi)+"+"+str(screenHe)
-    window.geometry(total)
-    window.attributes("-topmost", True)
-    files = [('Blockduino Sketch', '*.bds*'),
-             ('All files', '*.')]
-    filea = asksaveasfile(initialfile = name, filetypes = files, defaultextension = '.bds')
+def dsave(file,name,window):
+    f=window.create_file_dialog(webview.SAVE_DIALOG, directory='/', save_filename=name)
     try:
-        filea.write(file)
-        filea.close()
+        f = open(f, "w")
+        f.write(file)
+        f.close()
     except:
         pass
-    window.destroy()
+x=""
+salir=False
 
+def conf(window):
+    global x
+    x = window
 
 
 def launch_server(ip='localhost', port=8000, document_root_=''):
@@ -450,5 +447,35 @@ def handler_code_post():
 def save():
     file = request.json["code"]
     name = request.json['name']
-    print(str(file))
-    dsave(file,name)
+    dsave(file,name,x)
+
+@app.route('/serial')
+def serialo():
+    thread = threading.Timer(0.5, serialopen)
+    thread.start()
+    window = webview.create_window('Simple browser', 'http://localhost:8000/ardublockly/test.html')
+    window.closing += on_closing
+    window.loaded += on_open
+
+def on_open():
+    global salir
+    salir=False
+
+def on_closing():
+    global salir
+    salir=True
+
+def serialopen():
+    global salir
+    if salir:
+        the_other_process.terminate()
+    else:
+        the_other_process = subprocess.Popen(['python', 'ardublocklyserver/console.py'])
+    # global salir
+    # wsock = request.environ.get('wsgi.websocket')
+    # arduino = serial.Serial('COM3', 9600)
+    # time.sleep(2)
+    # while salir:
+    #     rawString = arduino.readline()
+    #     rawString=rawString.decode('utf-8')
+    #     wsock.send(str(rawString))
