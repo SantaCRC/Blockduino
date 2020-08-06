@@ -453,7 +453,7 @@ def save():
 def serialo():
     thread = threading.Timer(0.5, serialopen)
     thread.start()
-    window = webview.create_window('Simple browser', 'http://localhost:8000/ardublockly/test.html')
+    window = webview.create_window('Monitor Serial', 'http://localhost:8000/ardublockly/test.html')
     window.closing += on_closing
     window.loaded += on_open
 
