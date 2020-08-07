@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Entry point for the ArdublocklyServer application.
+"""Entry point for the blockduinoserver application.
 
 Copyright (c) 2017 carlosperate https://github.com/carlosperate/
 Licensed under the Apache License, Version 2.0 (the "License"):
@@ -16,9 +16,8 @@ import platform
 import threading
 import webbrowser
 import webview
-
-import ardublocklyserver.server
-import ardublocklyserver.compilersettings
+import blockduinoserver.server
+import blockduinoserver.compilersettings
 
 # Server IP and PORT settings
 SERVER_IP = 'localhost'
@@ -59,7 +58,7 @@ def find_ardublockly_dir(search_path):
     while path_to_navigate:
         # Check if file ardublockly/index.html exists within current path
         if os.path.isfile(
-                os.path.join(path_to_navigate, 'ardublockly', 'index.html')):
+                os.path.join(path_to_navigate, 'blockduino', 'index.html')):
             # Found the right folder
             return path_to_navigate
         path_to_navigate = os.path.dirname(path_to_navigate)
@@ -121,7 +120,7 @@ def parsing_cl_args():
                 print('Parsed "%s" flag. No browser will be opened.' % opt)
             elif opt in ('-f', '--findprojectroot'):
                 find_project_root = True
-                print('Parsed "%s" flag. The ardublockly project root will be '
+                print('Parsed "%s" flag. The blockduino project root will be '
                       'set as the server root directory.' % opt)
             else:
                 print('Flag "%s" not recognised.' % opt)
@@ -136,8 +135,8 @@ def main():
     """
     print('Running Python %s (%s bit) on %s' % (platform.python_version(),
           (struct.calcsize('P') * 8), platform.platform()))
-    if os.path.isdir(ardublocklyserver.local_packages_path):
-        print('Local packages: %s' % ardublocklyserver.local_packages_path)
+    if os.path.isdir(blockduinoserver.local_packages_path):
+        print('Local packages: %s' % blockduinoserver.local_packages_path)
     else:
         print('Not using local-packages, likely running packaged.')
 
@@ -149,20 +148,20 @@ def main():
     # project root directory, a directory specified in the arguments, or by
     # default to the project root directory.
     this_file_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-    ardublockly_root_dir = find_ardublockly_dir(this_file_dir)
-    if ardublockly_root_dir is None:
+    blockduino_root_dir = find_ardublockly_dir(this_file_dir)
+    if blockduino_root_dir is None:
         print('The Ardublockly project root folder could not be found within '
               'the %s directory !' % this_file_dir)
         sys.exit(1)
-    print('Ardublockly root directory:\n\t%s' % ardublockly_root_dir)
-    os.chdir(ardublockly_root_dir)
+    print('Ardublockly root directory:\n\t%s' % blockduino_root_dir)
+    os.chdir(blockduino_root_dir)
     print('Current working directory set to:\n\t%s' % os.getcwd())
 
     if find_project_root is True or server_root is None:
-        server_root = ardublockly_root_dir
+        server_root = blockduino_root_dir
     else:
         # Arguments have set a server root, and to not find ardublockly dir
-        if not os.path.commonprefix([server_root, ardublockly_root_dir]):
+        if not os.path.commonprefix([server_root, blockduino_root_dir]):
             print('The Ardublockly project folder needs to be accessible from '
                   'the server root directory !')
     print('Selected server root:\n\t%s' % server_root)
@@ -171,20 +170,20 @@ def main():
 
     print('\n======= Loading Settings =======')
     # ServerCompilerSettings is a singleton, no need to save instance
-    ardublocklyserver.compilersettings.ServerCompilerSettings(
-        ardublockly_root_dir)
+    blockduinoserver.compilersettings.ServerCompilerSettings(
+        blockduino_root_dir)
 
     print('\n======= Starting Server =======')
     if launch_browser:
         open_browser(ip=SERVER_IP, port=SERVER_PORT)
 
-    ardublocklyserver.server.launch_server(
+    blockduinoserver.server.launch_server(
             ip=SERVER_IP, port=SERVER_PORT, document_root_=server_root)
 
 
 if __name__ == '__main__':
     thread = threading.Timer(0.5, main)
     thread.start()
-    window = webview.create_window("Blockduino Alpha V1.0", 'http://localhost:8000/ardublockly/index.html?lang=es')
-    ardublocklyserver.server.conf(window)
+    window = webview.create_window("Blockduino Alpha V1.0", 'http://localhost:8000/blockduino/index.html?lang=es')
+    blockduinoserver.server.conf(window)
     webview.start(http_server=True)

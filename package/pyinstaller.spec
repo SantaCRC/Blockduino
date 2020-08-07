@@ -10,12 +10,12 @@ import sys
 project_root = os.path.realpath('')
 print('PyInstaller defined project root: %s' % project_root)
 local_packages = os.path.join(
-        project_root, 'ardublocklyserver', 'local-packages')
+        project_root, 'blockduinoserver', 'local-packages')
 sys.path.insert(0, project_root)
 sys.path.insert(0, local_packages)
 
 # Import required modules, ensures PyInstaller fails if it cannot find them
-import ardublockly
+import blockduino
 import six, configparser, serial, waitress, bottle
 
 
@@ -23,7 +23,7 @@ block_cipher = None
 
 a = Analysis(['../start.py'],
              pathex=None,
-             hiddenimports=['ardublocklyserver', 'waitress'],
+             hiddenimports=['blockduinoserver', 'waitress'],
              hookspath=None,
              runtime_hooks=None,
              excludes=None)
