@@ -148,8 +148,8 @@ Blockly.Msg.ARD_TIME_MICROS = 'current elapsed Time (microseconds)';
 Blockly.Msg.ARD_TIME_MICROS_TIP = 'Returns the number of microseconds since the Arduino board began running the current program. Has to be stored in a positive long integer';
 Blockly.Msg.ARD_TIME_INF = 'wait forever (end program)';
 Blockly.Msg.ARD_TIME_INF_TIP = 'Wait indefinitely, stopping the program.';
-Blockly.Msg.ARD_VAR_AS = 'as';
-Blockly.Msg.ARD_VAR_AS_TIP = 'Sets a value to a specific type';
+Blockly.Msg.ARD_VAR_AS = 'como';
+Blockly.Msg.ARD_VAR_AS_TIP = 'Establecer una variable a un tipo especifico';
 /// IO blocks - pulseIn - Block for function pulseIn(), it measure a pulse duration in a given pin.
 Blockly.Msg.ARD_PULSE_READ = 'measure %1 pulse on pin #%2';
 /// IO blocks - pulseIn - Block similar to ARD_PULSE_READ, but it adds a time-out in microseconds.
