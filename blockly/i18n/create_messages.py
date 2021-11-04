@@ -41,10 +41,10 @@ def main():
 
   # Process command-line arguments.
   parser = argparse.ArgumentParser(description='Convert JSON files to JS.')
-  parser.add_argument('--source_lang', default='en',
+  parser.add_argument('--source_lang', default='es',
                       help='ISO 639-1 source language code')
   parser.add_argument('--source_lang_file',
-                      default=os.path.join('json', 'en.json'),
+                      default=os.path.join('json', 'es.json'),
                       help='Path to .json file for source language')
   parser.add_argument('--source_synonym_file',
                       default=os.path.join('json', 'synonyms.json'),

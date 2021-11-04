@@ -390,7 +390,7 @@ class Gen_langfiles(threading.Thread):
     # The files msg/json/{en,qqq,synonyms}.json depend on msg/messages.js.
     if self._rebuild([os.path.join("msg", "messages.js")],
                      [os.path.join("msg", "json", f) for f in
-                      ["en.json", "qqq.json", "synonyms.json"]]):
+                      ["es.json", "qqq.json", "synonyms.json"]]):
       try:
         subprocess.check_call([
             "python",
@@ -412,7 +412,7 @@ class Gen_langfiles(threading.Thread):
       cmd = [
           "python",
           os.path.join("i18n", "create_messages.py"),
-          "--source_lang_file", os.path.join("msg", "json", "en.json"),
+          "--source_lang_file", os.path.join("msg", "json", "es.json"),
           "--source_synonym_file", os.path.join("msg", "json", "synonyms.json"),
           "--key_file", os.path.join("msg", "json", "keys.json"),
           "--output_dir", os.path.join("msg", "js"),
